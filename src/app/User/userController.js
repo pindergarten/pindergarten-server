@@ -186,43 +186,7 @@ exports.patchUsers = async function(req, res) {
     }
 };
 
-/**
- * API No.
- * API Name : 네이버 로그인 API
- * [GET] /app/login/naver
- */
-exports.naverLogin = async function(req, res) {
-    const token = req.body.accessToken;
-    const header = "Bearer " + token; //Bearer 다음에 공백 추가
-    const api_url = "https://openapi.naver.com/v1/nid/me";
-    const options = {
-        url: api_url,
-        headers: { Authorization: header },
-    };
-    request.get(options, async function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-            const obj = JSON.parse(body);
-            const email = obj.response.email;
-            const phone = obj.response.mobile;
-            const name = obj.response.name;
 
-            if (!email) return res.send(response(baseResponse.SIGNUP_EMAIL_EMPTY));
-            if (!name) return res.send(response(baseResponse.SIGNUP_NICKNAME_EMPTY));
-
-            const signUpResponse = await userService.createNaverUser(
-                email,
-                name,
-                phone,
-            );
-
-            return res.send(signUpResponse);
-        } else {
-            if (response != null) {
-                res.send(errResponse(baseResponse.NAVER_LOGIN_FAIL));
-            }
-        }
-    });
-};
 /**
  * API No. 아이디,비밀번호 확인
  * [POST] /app/users/check
@@ -264,17 +228,6 @@ exports.postUsersCheck = async function(req, res) {
     return res.send(response(baseResponse.SUCCESS));
 };
 
-/**
- * API No. 자동로그인
- * [POST] /app/login/auto
- */
-exports.autoLogin = async function(req, res) {
-    const userIdFromJWT = req.verifiedToken.userId;
-
-    const signInResponse = await userService.postAutoSignIn(userIdFromJWT);
-
-    return res.send(signInResponse);
-};
 
 
 
@@ -332,6 +285,7 @@ exports.check = async function(req, res) {
     console.log(userIdResult);
     return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
 };
+
 
 /**
  * API No. 인증문자 전송

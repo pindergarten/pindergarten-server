@@ -91,18 +91,6 @@ async function updateEmailVerify(connection, email) {
 }
 
 
-//네이버 로그인
-async function insertNaverUser(connection, insertUserParams) {
-    const insertEmailQuery = `
-    INSERT INTO USER(userEmail, name, phone, profileImg, loginType)
-    VALUES(?, ?, ?, ?, 1);
-    `;
-    const insertEmailRow = await connection.query(
-        insertEmailQuery,
-        insertUserParams
-    );
-    return insertEmailRow;
-}
 
 //jwt status 업데이트
 async function updateJwtStatus(connection, userIdx) {
