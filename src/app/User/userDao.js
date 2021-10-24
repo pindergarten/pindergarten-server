@@ -184,7 +184,6 @@ module.exports = {
     updateUserNickname,
     updateUserStatus,
     selectUserEmail,
-    insertNaverUser,
     selectLoginUser,
     updateJwtToken,
     updateJwtStatus
