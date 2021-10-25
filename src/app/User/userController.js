@@ -15,7 +15,7 @@ const { emit } = require("nodemon");
 /**
  * API No. 0
  * API Name : 테스트 API
- * [GET] /app/test
+ * [GET] /api/test
  */
 exports.getTest = async function(req, res) {
 
@@ -25,37 +25,32 @@ exports.getTest = async function(req, res) {
 /**
  * API No. 1
  * API Name : 유저 생성 (회원가입) API
- * [POST] /app/users
+ * [POST] /api/users
  */
 exports.postUsers = async function(req, res) {
 
     /**
-     * Body: email, password, name, phone
+     * Body: nickname, password, phone
      */
     const {
-        email,
+        nickname,
         password,
-        name,
         password_check,
         phone,
     } = req.body;
 
     // 빈 값 체크
-    if (!email)
-        return res.send(response(baseResponse.SIGNUP_EMAIL_EMPTY));
     if (!password) return res.send(response(baseResponse.SIGNUP_PASSWORD_EMPTY));
     if (!password_check)
         return res.send(response(baseResponse.SIGNUP_PASSWORD_CHECK_EMPTY));
-    if (!name) return res.send(response(baseResponse.SIGNUP_NICKNAME_EMPTY));
+    if (!nickname) return res.send(response(baseResponse.SIGNUP_NICKNAME_EMPTY));
 
     // 길이 체크
-    if (email.length > 30)
-        return res.send(response(baseResponse.SIGNUP_EMAIL_LENGTH));
-    if (password.length < 6 || password.length > 12)
+    if (password.length < 8 || password.length > 16)
         return res.send(response(baseResponse.SIGNUP_PASSWORD_LENGTH));
-    if (password_check.length < 6 || password_check.length > 12)
+    if (password_check.length < 8 || password_check.length > 16)
         return res.send(response(baseResponse.SIGNUP_PASSWORD_LENGTH));
-    if (name.length < 2)
+    if (nickname.length < 2)
         return res.send(response(baseResponse.SIGNUP_NICKNAME_LENGTH));
 
     //비밀번호 일치 확인
@@ -72,6 +67,7 @@ exports.postUsers = async function(req, res) {
     if (checkNumber < 0 || checkEnglish < 0) {
         return res.send(response(baseResponse.SIGNUP_PASSWORD_ERROR_TYPE));
     }
+
     //번호 정규표현식 체크
     var regPhone = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
     if (!regPhone.test(phone))
@@ -80,9 +76,8 @@ exports.postUsers = async function(req, res) {
 
 
     const signUpResponse = await userService.createUser(
-        email,
         password,
-        name,
+        nickname,
         phone
     );
 
@@ -92,7 +87,7 @@ exports.postUsers = async function(req, res) {
 /**
  * API No. 2
  * API Name : 유저 조회 API (+ 이메일로 검색 조회)
- * [GET] /app/users
+ * [GET] /api/users
  */
 exports.getUsers = async function(req, res) {
 
@@ -115,7 +110,7 @@ exports.getUsers = async function(req, res) {
 /**
  * API No. 3
  * API Name : 특정 유저 조회 API
- * [GET] /app/users/{userId}
+ * [GET] /api/users/{userId}
  */
 exports.getUserById = async function(req, res) {
 
@@ -131,11 +126,10 @@ exports.getUserById = async function(req, res) {
 };
 
 
-// TODO: After 로그인 인증 방법 (JWT)
 /**
- * API No. 4
- * API Name : 로그인 API
- * [POST] /app/login
+ * API No.4
+ * API Name : 로그인 API (JWT 생성)
+ * [POST] /api/login
  * body : email, passsword
  */
 exports.login = async function(req, res) {
@@ -159,37 +153,9 @@ exports.login = async function(req, res) {
     return res.send(signInResponse);
 };
 
-
 /**
- * API No. 5
- * API Name : 회원 정보 수정 API + JWT + Validation
- * [PATCH] /app/users/:userId
- * path variable : userId
- * body : name
- */
-exports.patchUsers = async function(req, res) {
-
-    // jwt - userId, path variable :userId
-
-    const userIdFromJWT = req.verifiedToken.userId
-
-    const userId = req.params.userId;
-    const name = req.body.name;
-
-    if (userIdFromJWT != userId) {
-        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
-    } else {
-        if (!name) return res.send(errResponse(baseResponse.USER_name_EMPTY));
-
-        const editUserInfo = await userService.editUser(userId, name)
-        return res.send(editUserInfo);
-    }
-};
-
-
-/**
- * API No. 아이디,비밀번호 확인
- * [POST] /app/users/check
+ * API No.5 아이디,비밀번호 확인
+ * [POST] /api/users/check
  */
 exports.postUsersCheck = async function(req, res) {
     /**
@@ -229,10 +195,129 @@ exports.postUsersCheck = async function(req, res) {
 };
 
 
+/**
+ * API No.6 인증문자 전송
+ * [POST] /api/users/sms-send
+ */
+exports.postPhoneCheck = async function(req, res) {
+    const { phone } = req.body;
 
+
+    if (!phone) return res.send(response(baseResponse.USER_PHONE_EMPTY));
+
+    //번호 정규표현식 체크
+    var regPhone = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
+    if (!regPhone.test(phone))
+        return res.send(response(baseResponse.SIGNUP_PHONE_ERROR_TYPE));
+
+    const number = Math.floor(Math.random() * (9999 - 1000)) + 1000;
+
+    cache.del(phone);
+    cache.put(phone, number);
+
+    console.log(cache.get(phone));
+
+    const space = " "; // one space
+    const newLine = "\n"; // new line
+    const method = "POST"; // method
+    const serviceId = "ncp:sms:kr:273278444646:pindergarten";
+    const url = `https://sens.apigw.ntruss.com/sms/v2/services/${serviceId}/messages`;
+    const url2 = `/sms/v2/services/${serviceId}/messages`;
+    const timestamp = Date.now().toString();
+    let message = [];
+    let hmac = crypto.createHmac("sha256", secret_config.SENSAPI_serviceSecret);
+
+    message.push(method);
+    message.push(space);
+    message.push(url2);
+    message.push(newLine);
+    message.push(timestamp);
+    message.push(newLine);
+    message.push(secret_config.SENSAPI_AccessKeyId);
+    const signature = hmac.update(message.join("")).digest("base64");
+
+    try {
+        request({
+            method: method,
+            json: true,
+            uri: url,
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "x-ncp-iam-access-key": secret_config.SENSAPI_AccessKeyId,
+                "x-ncp-apigw-timestamp": timestamp,
+                "x-ncp-apigw-signature-v2": signature.toString(),
+            },
+            body: {
+                type: "SMS",
+                contentType: "COMM",
+                countryCode: "82",
+                from: secret_config.SENSAPI_phone,
+                content: `[핀더가든] 인증코드는 [${number}] 입니다.`,
+                messages: [{
+                    to: `${phone}`,
+                }, ],
+            },
+        }, function(err, res, html) {
+            if (err) console.log(err);
+            else {
+                resultCode = 200;
+                console.log(html);
+            }
+        });
+        return res.send(response(baseResponse.SUCCESS));
+    } catch (err) {
+        cache.del(phone);
+        return res.send(response(baseResponse.SUCCESS));
+    }
+};
+
+/** 
+ * API No.7 인증문자 확인
+ * [POST] /app/users/sms-verify
+ */
+exports.phoneCheck = async function(req, res) {
+    //const userIdResult = req.verifiedToken.userId;
+
+    const { phone, verifyCode } = req.body;
+
+    if (!phone) return res.send(response(baseResponse.USER_PHONE_EMPTY));
+    if (!verifyCode)
+        return res.send(response(baseResponse.PHONE_VEFIRY_CODE_EMPTY));
+    if (verifyCode >= 10000)
+        return res.send(response(baseResponse.PHONE_VEFIRY_CODE_LENGTH));
+
+    //번호 정규표현식 체크
+    var regPhone = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
+    if (!regPhone.test(phone))
+        return res.send(response(baseResponse.SIGNUP_PHONE_ERROR_TYPE));
+
+    const CacheData = cache.get(phone);
+
+    if (!CacheData) {
+        return res.send(response(baseResponse.SMS_NOT_MATCH));
+    }
+
+    if (CacheData != verifyCode) {
+        return res.send(response(baseResponse.SMS_NOT_MATCH));
+    }
+
+    return res.send(response(baseResponse.SUCCESS));
+};
 
 /**
- * API No. 마이페이지 조회
+ * API No8. 로그아웃
+ * [PATCH] /app/logout
+ */
+exports.logout = async function(req, res) {
+    const userIdFromJWT = req.verifiedToken.userId;
+
+    const logoutResponse = await userService.patchJwtStatus(userIdFromJWT);
+
+    return res.send(logoutResponse);
+};
+
+/**
+ * API No9. 마이페이지 조회
  * [GET] /app/users/:userId
  */
 exports.getUser = async function(req, res) {
@@ -265,138 +350,34 @@ exports.getUser = async function(req, res) {
 };
 
 /**
- * API No. 로그아웃
- * [PATCH] /app/logout
+ * API No. 10
+ * API Name : 회원 정보 수정 API + JWT + Validation
+ * [PATCH] /api/users/:userId
+ * path variable : userId
+ * body : name
  */
-exports.logout = async function(req, res) {
-    const userIdFromJWT = req.verifiedToken.userId;
+exports.patchUsers = async function(req, res) {
 
-    const logoutResponse = await userService.patchJwtStatus(userIdFromJWT);
+    // jwt - userId, path variable :userId
 
-    return res.send(logoutResponse);
-};
+    const userIdFromJWT = req.verifiedToken.userId
 
+    const userId = req.params.userId;
+    const name = req.body.name;
 
-/** JWT 토큰 검증 API
- * [GET] /app/auto-login
- */
-exports.check = async function(req, res) {
-    const userIdResult = req.verifiedToken.userId;
-    console.log(userIdResult);
-    return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        if (!name) return res.send(errResponse(baseResponse.USER_name_EMPTY));
+
+        const editUserInfo = await userService.editUser(userId, name)
+        return res.send(editUserInfo);
+    }
 };
 
 
 /**
- * API No. 인증문자 전송
- * [POST] /app/users/sms-send
- */
-exports.postPhoneCheck = async function(req, res) {
-    const { userId, phone } = req.body;
-
-    if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
-    if (!phone) return res.send(response(baseResponse.USER_PHONE_EMPTY));
-
-    //번호 정규표현식 체크
-    var regPhone = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
-    if (!regPhone.test(phone))
-        return res.send(response(baseResponse.SIGNUP_PHONE_ERROR_TYPE));
-
-    const number = Math.floor(Math.random() * (9999 - 1000)) + 1000;
-
-    cache.del(phone);
-    cache.put(phone, number);
-
-    console.log(cache.get(phone));
-
-    const space = " "; // one space
-    const newLine = "\n"; // new line
-    const method = "POST"; // method
-    const serviceId = "ncp:sms:kr:273278440543:findit";
-    const url = `https://sens.apigw.ntruss.com/sms/v2/services/${serviceId}/messages`;
-    const url2 = `/sms/v2/services/${serviceId}/messages`;
-    const timestamp = Date.now().toString();
-    let message = [];
-    let hmac = crypto.createHmac("sha256", secret_config.SENSAPI_serviceSecret);
-
-    message.push(method);
-    message.push(space);
-    message.push(url2);
-    message.push(newLine);
-    message.push(timestamp);
-    message.push(newLine);
-    message.push(secret_config.SENSAPI_AccessKeyId);
-    const signature = hmac.update(message.join("")).digest("base64");
-
-    try {
-        request({
-            method: method,
-            json: true,
-            uri: url,
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                "x-ncp-iam-access-key": secret_config.SENSAPI_AccessKeyId,
-                "x-ncp-apigw-timestamp": timestamp,
-                "x-ncp-apigw-signature-v2": signature.toString(),
-            },
-            body: {
-                type: "SMS",
-                contentType: "COMM",
-                countryCode: "82",
-                from: secret_config.SENSAPI_phone,
-                content: `핀딧 인증코드는 [${number}] 입니다.`,
-                messages: [{
-                    to: `${phone}`,
-                }, ],
-            },
-        }, function(err, res, html) {
-            if (err) console.log(err);
-            else {
-                resultCode = 200;
-                console.log(html);
-            }
-        });
-        return res.send(response(baseResponse.SUCCESS));
-    } catch (err) {
-        cache.del(phone);
-        return res.send(response(baseResponse.SUCCESS));
-    }
-};
-
-/** 인증문자 검증
- * [POST] /app/users/phone-check
- */
-exports.phoneCheck = async function(req, res) {
-    //const userIdResult = req.verifiedToken.userId;
-
-    const { phone, verifyCode } = req.body;
-
-    if (!phone) return res.send(response(baseResponse.USER_PHONE_EMPTY));
-    if (!verifyCode)
-        return res.send(response(baseResponse.PHONE_VEFIRY_CODE_EMPTY));
-    if (verifyCode >= 10000)
-        return res.send(response(baseResponse.PHONE_VEFIRY_CODE_LENGTH));
-
-    //번호 정규표현식 체크
-    var regPhone = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
-    if (!regPhone.test(phone))
-        return res.send(response(baseResponse.SIGNUP_PHONE_ERROR_TYPE));
-
-    const CacheData = cache.get(phone);
-
-    if (!CacheData) {
-        return res.send(response(baseResponse.SMS_NOT_MATCH));
-    }
-
-    if (CacheData != verifyCode) {
-        return res.send(response(baseResponse.SMS_NOT_MATCH));
-    }
-
-    return res.send(response(baseResponse.SUCCESS));
-};
-
-/**
- * API No. 회원탈퇴 API
+ * API No.11 회원탈퇴 API
  * [PATCH] /app/users/:userId/status
  */
 exports.patchUserStatus = async function(req, res) {
@@ -410,4 +391,14 @@ exports.patchUserStatus = async function(req, res) {
 
     const updateUserStatusResponse = await userService.updateUserStatus(userId);
     return res.send(updateUserStatusResponse);
+};
+
+
+/** JWT 토큰 검증 API
+ * [GET] /api/auto-login
+ */
+exports.check = async function(req, res) {
+    const userIdResult = req.verifiedToken.userId;
+    console.log(userIdResult);
+    return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
 };
