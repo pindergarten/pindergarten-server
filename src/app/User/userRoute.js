@@ -14,6 +14,9 @@ module.exports = function(app) {
     // 3.유저 생성(회원가입) API
     app.post('/api/users', user.postUsers);
 
+    // 4.로그인 하기 API(JWT 생성)
+    app.post('/api/users/sign-in', user.signIn);
+
     // JWT 검증 API
     app.get('/api/auto-login', jwtMiddleware, user.check);
 

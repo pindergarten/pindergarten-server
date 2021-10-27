@@ -22,6 +22,13 @@ exports.nickNameCheck = async function(nickname) {
     return nickNameResult;
 };
 
+exports.accountCheck = async function(phone) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const userAccountResult = await userDao.selectUserAccount(connection, phone)
+    connection.release();
+
+    return userAccountResult;
+};
 
 exports.retrieveUser = async function(userId) {
     const connection = await pool.getConnection(async(conn) => conn);
@@ -30,4 +37,30 @@ exports.retrieveUser = async function(userId) {
     connection.release();
 
     return userResult[0];
+};
+
+exports.passwordCheck = async function(selectUserPasswordParams) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const passwordCheckResult = await userDao.selectUserPassword(
+        connection,
+        selectUserPasswordParams
+    );
+    connection.release();
+    return passwordCheckResult[0];
+};
+
+exports.checkJWT = async function(userId) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const checkJWTResult = await userDao.selectJwtToken(connection, userId);
+    connection.release();
+
+    return checkJWTResult;
+};
+
+exports.loginCheck = async function(userId) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const loginResult = await userDao.selectLoginUser(connection, userId);
+    connection.release();
+
+    return loginResult;
 };

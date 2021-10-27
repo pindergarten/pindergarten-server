@@ -1,7 +1,7 @@
 // 전화번호로 회원 조회
 async function selectUserPhoneNumber(connection, phone) {
     const selectUserPhoneNumberQuery = `
-                SELECT nickname, phone, id
+                SELECT id, nickname, phone
                 FROM User
                 WHERE phone = ?;
                 `;
@@ -12,7 +12,7 @@ async function selectUserPhoneNumber(connection, phone) {
 // 닉네임으로 회원 조회
 async function selectUserNickName(connection, nickName) {
     const selectUserNickNameQuery = `
-                SELECT nickname
+                SELECT id, nickname, phone
                 FROM User
                 WHERE nickname = ?;
                 `;
@@ -20,12 +20,11 @@ async function selectUserNickName(connection, nickName) {
     return nickNameRows;
 };
 
-
 // userId 회원 조회
 async function selectUserId(connection, userId) {
     const selectUserIdQuery = `
-                   SELECT id, email, name 
-                   FROM USER 
+                   SELECT id, nickname, phone
+                   FROM User 
                    WHERE id = ?;
                    `;
     const [userRow] = await connection.query(selectUserIdQuery, userId);
@@ -46,13 +45,77 @@ async function insertUserInfo(connection, insertUserInfoParams) {
     return insertUserInfoRow;
 }
 
+// 유저 계정 상태 체크
+async function selectUserAccount(connection, phone) {
+    const selectUserAccountQuery = `
+                SELECT status, id
+                FROM User
+                WHERE phone = ?;
+                `;
+    const selectUserAccountRow = await connection.query(selectUserAccountQuery, phone);
+
+    return selectUserAccountRow[0];
+};
+
+// 패스워드 체크
+async function selectUserPassword(connection, selectUserPasswordParams) {
+    const selectUserPasswordQuery = `
+          SELECT phone, nickname, password
+          FROM User 
+          WHERE phone = ? AND password = ?;`;
+    const selectUserPasswordRow = await connection.query(
+        selectUserPasswordQuery,
+        selectUserPasswordParams
+    );
+
+    return selectUserPasswordRow;
+}
+
+//login user 조회
+async function selectLoginUser(connection, userId) {
+    const selectJwtQuery = `
+    SELECT userId FROM Token WHERE userId='?';
+    `;
+    const selectJwtRow = await connection.query(selectJwtQuery, userId);
+    return selectJwtRow;
+}
+
+//login 추가
+async function insertLoginUser(connection, updateJwtTokenParams) {
+    const insertJwtQuery = `
+    INSERT INTO Token(jwt, userId) VALUES(?,'?');
+    `;
+    const insertJwtRow = await connection.query(
+        insertJwtQuery,
+        updateJwtTokenParams
+    );
+    return insertJwtRow;
+}
 
 
+//jwt 조회
+async function selectJwtToken(connection, userIdx) {
+    const selectJWTQuery = `
+                SELECT jwt, userId
+                FROM Token
+                WHERE userId ='?';
+                `;
+    const [selectJWTRow] = await connection.query(selectJWTQuery, userIdx);
 
+    return selectJWTRow;
+};
 
-
-
-
+//jwt token 업데이트
+async function updateJwtToken(connection, updateJwtTokenParams) {
+    const updateJwtTokenQuery = `
+  UPDATE Token SET jwt=? where id=?
+  `;
+    const updateJwtTokenRow = await connection.query(
+        updateJwtTokenQuery,
+        updateJwtTokenParamss
+    );
+    return updateJwtTokenRow;
+}
 
 
 module.exports = {
@@ -60,5 +123,11 @@ module.exports = {
     selectUserNickName,
     selectUserId,
     insertUserInfo,
+    selectUserAccount,
+    selectUserPassword,
+    selectLoginUser,
+    insertLoginUser,
+    selectJwtToken,
+    updateJwtToken
 
 };

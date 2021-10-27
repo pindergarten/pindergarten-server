@@ -206,7 +206,34 @@ exports.postUsers = async function(req, res) {
     return res.send(signUpResponse);
 };
 
+/**
+ * API No.4 유저 로그인
+ * [POST] /api/users/sign-in
+ */
+exports.signIn = async function(req, res) {
+    const { phone, password } = req.body;
 
+    // 빈 값 체크
+    if (!phone) return res.send(response(baseResponse.SIGNUP_PHONE_EMPTY));
+    if (!password) return res.send(response(baseResponse.SIGNUP_PASSWORD_EMPTY));
+
+    // 길이 체크
+    if (phone.length < 10)
+        return res.send(response(baseResponse.SIGNUP_PHONE_LENGTH));
+    if (password.length < 8 || password.length > 16) {
+        return res.send(response(baseResponse.SIGNUP_PASSWORD_LENGTH));
+    }
+
+    //번호 정규표현식 체크
+    var regPhone = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
+    if (!regPhone.test(phone))
+        return res.send(response(baseResponse.SIGNUP_PHONE_ERROR_TYPE));
+
+    const signInResponse = await userService.postSignIn(phone, password);
+
+    return res.send(signInResponse);
+
+}
 
 
 /** JWT 토큰 검증 API

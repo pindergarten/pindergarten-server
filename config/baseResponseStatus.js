@@ -90,6 +90,21 @@ module.exports = {
         code: 2015,
         message: "중복된 닉네임입니다.",
     },
+    SIGNIN_PHONENUMBER_WRONG: {
+        isSuccess: false,
+        code: 2016,
+        message: "휴대폰 번호가 잘못되었습니다.",
+    },
+    SIGNIN_INACTIVE_ACCOUNT: {
+
+    },
+    SIGNIN_WITHDRAWAL_ACCOUNT: {
+
+    },
+    ALREADY_LOGIN: {
+
+    },
+    SIGNIN_PASSWORD_WRONG: {},
 
 
 
