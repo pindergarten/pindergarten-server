@@ -112,7 +112,7 @@ async function updateJwtToken(connection, updateJwtTokenParams) {
   `;
     const updateJwtTokenRow = await connection.query(
         updateJwtTokenQuery,
-        updateJwtTokenParamss
+        updateJwtTokenParams
     );
     return updateJwtTokenRow;
 }
