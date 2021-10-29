@@ -12,7 +12,7 @@ module.exports = function(app) {
     app.post("/api/users/sms-verify", user.phoneCheck);
 
     // 3.닉네임 중복 확인 API
-    app.post('/api/users', user.postUsers);
+    app.post('/api/users/nickname', user.postNickname);
 
     // 4.유저 생성(회원가입) API
     app.post('/api/users', user.postUsers);

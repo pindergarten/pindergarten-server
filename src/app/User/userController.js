@@ -11,6 +11,7 @@ const jwt = require("jsonwebtoken");
 
 const regexEmail = require("regex-email");
 const { emit } = require("nodemon");
+const baseResponseStatus = require("../../../config/baseResponseStatus");
 
 /**
  * API No. 0
@@ -35,6 +36,8 @@ exports.postPhoneCheck = async function(req, res) {
     const phoneNumberRows = await userProvider.phoneNumberCheck(phone);
     if (phoneNumberRows.length > 0) {
         return res.send(response(baseResponse.SIGNUP_REDUNDANT_PHONENUMBER));
+    } else {
+
     }
 
     //번호 정규표현식 체크
@@ -137,7 +140,25 @@ exports.phoneCheck = async function(req, res) {
 };
 
 /**
- * API No. 3
+ * API No.3 닉네임 중복 확인 API
+ * [POST] /api/users/nickname
+ */
+exports.postNickname = async function(req, res) {
+    const { nickname } = req.body;
+    // 닉네임 길이 확인
+    if (nickname.length < 2)
+        return res.send(response(baseResponse.SIGNUP_NICKNAME_LENGTH));
+
+    // 닉네임 중복 확인
+    const nickNameRows = await userProvider.nickNameCheck(nickname);
+    if (nickNameRows.length > 0) {
+        return res.send(response(baseResponse.SIGNUP_REDUNDANT_NICKNAME));
+    }
+    return res.send(baseResponse.SUCCESS);
+}
+
+/**
+ * API No. 4
  * API Name : 유저 생성 (회원가입) API
  * [POST] /api/users
  */
@@ -206,8 +227,9 @@ exports.postUsers = async function(req, res) {
     return res.send(signUpResponse);
 };
 
+
 /**
- * API No.4 유저 로그인
+ * API No.5 유저 로그인
  * [POST] /api/users/sign-in
  */
 exports.signIn = async function(req, res) {
@@ -236,7 +258,7 @@ exports.signIn = async function(req, res) {
 }
 
 /**
- * API No.5 비밀번호 재설정
+ * API No.6 비밀번호 재설정
  * [POST] /api/users/find-pw
  */
 exports.findPassword = async function(req, res) {
