@@ -45,18 +45,16 @@ exports.postSignIn = async function(phone, password) {
         if (phoneNumberRows.length < 1) {
             return errResponse(baseResponse.SIGNIN_PHONENUMBER_WRONG);
         }
-        const selectPhone = phoneNumberRows[0].phone;
 
         // 비밀번호 확인
+        const selectPassword = phoneNumberRows[0].password;
         const hashedPassword = await crypto
             .createHash("sha512")
             .update(password)
             .digest("hex");
 
-        const selectUserPasswordParams = [selectPhone, hashedPassword];
-        const passwordRows = await userProvider.passwordCheck(selectUserPasswordParams);
 
-        if (passwordRows[0].password !== hashedPassword) {
+        if (selectPassword !== hashedPassword) {
             return errResponse(baseResponse.SIGNIN_PASSWORD_WRONG);
         }
 
