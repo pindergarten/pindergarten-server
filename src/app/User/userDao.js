@@ -1,7 +1,7 @@
 // 전화번호로 회원 조회
 async function selectUserPhoneNumber(connection, phone) {
     const selectUserPhoneNumberQuery = `
-                SELECT id, nickname, phone
+                SELECT id, nickname, phone, password
                 FROM User
                 WHERE phone = ?;
                 `;
@@ -118,6 +118,19 @@ async function updateJwtToken(connection, updateJwtTokenParams) {
 }
 
 
+// 비밀번호 업데이트
+async function updatePassword(connection, updatePasswordParams) {
+    const updatePasswordQuery = `
+  UPDATE User SET password=? where phone=?
+  `;
+    const updatePasswordRow = await connection.query(
+        updatePasswordQuery,
+        updatePasswordParams
+    );
+    return updatePasswordRow;
+}
+
+
 module.exports = {
     selectUserPhoneNumber,
     selectUserNickName,
@@ -128,6 +141,6 @@ module.exports = {
     selectLoginUser,
     insertLoginUser,
     selectJwtToken,
-    updateJwtToken
-
+    updateJwtToken,
+    updatePassword
 };

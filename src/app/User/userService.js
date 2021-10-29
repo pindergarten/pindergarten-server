@@ -109,3 +109,27 @@ exports.postSignIn = async function(phone, password) {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+
+exports.updatePassword = async function(phone, password) {
+    try {
+        // 비밀번호 암호화
+        const hashedPassword = await crypto
+            .createHash("sha512")
+            .update(password)
+            .digest("hex");
+
+        const updatePasswordParams = [hashedPassword, phone];
+
+        const connection = await pool.getConnection(async(conn) => conn);
+
+        const userIdResult = await userDao.updatePassword(connection, updatePasswordParams);
+
+        connection.release();
+        return response(baseResponse.SUCCESS);
+
+
+    } catch (err) {
+        logger.error(`App - updatePassword Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

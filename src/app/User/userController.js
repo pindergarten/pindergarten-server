@@ -144,7 +144,7 @@ exports.phoneCheck = async function(req, res) {
 exports.postUsers = async function(req, res) {
 
     /**
-     * Body: nickname, password,password_check, phone
+     * Body: nickname, password, password_check, phone
      */
     const {
         nickname,
@@ -233,6 +233,36 @@ exports.signIn = async function(req, res) {
 
     return res.send(signInResponse);
 
+}
+
+/**
+ * API No.5 비밀번호 재설정
+ * [POST] /api/users/find-pw
+ */
+exports.findPassword = async function(req, res) {
+    const { phone, password, password_check } = req.body;
+
+    // 빈 값 체크
+
+    if (!password) return res.send(response(baseResponse.SIGNUP_PASSWORD_EMPTY));
+    if (!password_check)
+        return res.send(response(baseResponse.SIGNUP_PASSWORD_CHECK_EMPTY));
+
+    // 길이 체크
+    if (password.length < 8 || password.length > 16)
+        return res.send(response(baseResponse.SIGNUP_PASSWORD_LENGTH));
+    if (password_check.length < 8 || password_check.length > 16)
+        return res.send(response(baseResponse.SIGNUP_PASSWORD_LENGTH));
+
+    //비밀번호 일치 확인
+    if (password !== password_check)
+        return res.send(response(baseResponse.SIGNUP_PASSWORD_NOT_MATCH));
+
+    const findPasswordResponse = await userService.updatePassword(
+        phone, password
+    );
+
+    return res.send(findPasswordResponse);
 }
 
 

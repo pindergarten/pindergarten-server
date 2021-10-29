@@ -96,15 +96,29 @@ module.exports = {
         message: "휴대폰 번호가 잘못되었습니다.",
     },
     SIGNIN_INACTIVE_ACCOUNT: {
+        isSuccess: false,
+        code: 2017,
+        message: "비활성화 계정입니다.",
 
     },
     SIGNIN_WITHDRAWAL_ACCOUNT: {
 
+        isSuccess: false,
+        code: 2018,
+        message: "휴대폰 번호가 잘못되었습니다.",
     },
     ALREADY_LOGIN: {
+        isSuccess: false,
+        code: 2019,
+        message: "이미 로그인 되었습니다.",
 
     },
-    SIGNIN_PASSWORD_WRONG: {},
+    SIGNIN_PASSWORD_WRONG: {
+
+        isSuccess: false,
+        code: 2020,
+        message: "비밀번호가 틀렸습니다.",
+    },
 
 
 
