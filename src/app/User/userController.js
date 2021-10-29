@@ -154,9 +154,6 @@ exports.smsCheck = async function(req, res) {
  */
 exports.postNickname = async function(req, res) {
     const { nickname } = req.body;
-    // 닉네임 길이 확인
-    if (nickname.length < 2)
-        return res.send(response(baseResponse.SIGNUP_NICKNAME_LENGTH));
 
     // 닉네임 중복 확인
     const nickNameRows = await userProvider.nickNameCheck(nickname);

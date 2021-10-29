@@ -19,9 +19,10 @@ module.exports = function() {
     /* App (Android, iOS) */
 
     require("../src/app/User/userRoute")(app);
-    // require("../src/app/Post/postRoute")(app);
+    require("../src/app/Post/postRoute")(app);
     // require("../src/app/Comment/commentRoute")(app);
     // require("../src/app/Pet/petRoute")(app);
+    // require("../src/app/Pindergarten/pinderRoute")(app);
 
     return app;
 };
