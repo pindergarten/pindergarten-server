@@ -155,11 +155,15 @@ exports.smsCheck = async function(req, res) {
 exports.postNickname = async function(req, res) {
     const { nickname } = req.body;
 
+    if (!nickname) return res.send(response(baseResponse.USER_NICKNAME_EMPTY));
+
     // 닉네임 중복 확인
     const nickNameRows = await userProvider.nickNameCheck(nickname);
+
     if (nickNameRows.length > 0) {
         return res.send(response(baseResponse.SIGNUP_REDUNDANT_NICKNAME));
     }
+
     return res.send(baseResponse.SUCCESS);
 }
 
