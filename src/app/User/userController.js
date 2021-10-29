@@ -24,8 +24,8 @@ exports.getTest = async function(req, res) {
 }
 
 /**
- * API No.1 인증문자 전송
- * [POST] /api/users/sms-send
+ * API No.1 핸드폰번호 확인 API
+ * [POST] /api/users/phone
  */
 exports.postPhoneCheck = async function(req, res) {
     const { phone } = req.body;
@@ -36,9 +36,18 @@ exports.postPhoneCheck = async function(req, res) {
     const phoneNumberRows = await userProvider.phoneNumberCheck(phone);
     if (phoneNumberRows.length > 0) {
         return res.send(response(baseResponse.SIGNUP_REDUNDANT_PHONENUMBER));
-    } else {
-
     }
+
+    return res.send(response(baseResponse.SUCCESS));
+}
+
+/**
+ * API No.2 인증문자 전송
+ * [POST] /api/users/sms-send
+ */
+exports.postSmsCheck = async function(req, res) {
+    const { phone } = req.body;
+
 
     //번호 정규표현식 체크
     var regPhone = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
@@ -107,10 +116,10 @@ exports.postPhoneCheck = async function(req, res) {
 };
 
 /** 
- * API No.2 인증문자 확인
+ * API No.3 인증문자 확인
  * [POST] /api/users/sms-verify
  */
-exports.phoneCheck = async function(req, res) {
+exports.smsCheck = async function(req, res) {
     //const userIdResult = req.verifiedToken.userId;
 
     const { phone, verifyCode } = req.body;
@@ -140,7 +149,7 @@ exports.phoneCheck = async function(req, res) {
 };
 
 /**
- * API No.3 닉네임 중복 확인 API
+ * API No.4 닉네임 중복 확인 API
  * [POST] /api/users/nickname
  */
 exports.postNickname = async function(req, res) {
@@ -158,8 +167,7 @@ exports.postNickname = async function(req, res) {
 }
 
 /**
- * API No. 4
- * API Name : 유저 생성 (회원가입) API
+ * API No.5 유저 생성 (회원가입) API
  * [POST] /api/users
  */
 exports.postUsers = async function(req, res) {
@@ -229,7 +237,7 @@ exports.postUsers = async function(req, res) {
 
 
 /**
- * API No.5 유저 로그인
+ * API No.6 유저 로그인
  * [POST] /api/users/sign-in
  */
 exports.signIn = async function(req, res) {
@@ -258,7 +266,7 @@ exports.signIn = async function(req, res) {
 }
 
 /**
- * API No.6 비밀번호 재설정
+ * API No.7 비밀번호 재설정
  * [POST] /api/users/find-pw
  */
 exports.findPassword = async function(req, res) {
