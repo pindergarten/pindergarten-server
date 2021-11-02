@@ -119,8 +119,14 @@ module.exports = {
         code: 2020,
         message: "비밀번호가 틀렸습니다.",
     },
+    COMMENT_USERID_EMPTY: {
 
-
+    },
+    USER_ID_NOT_MATCH: {
+        isSuccess: false,
+        code: 2020,
+        message: "userId를 확인해주세요.",
+    },
 
     //Connection, Transaction 등의 서버 오류
     DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },

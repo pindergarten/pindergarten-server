@@ -8,10 +8,8 @@ const request = require("request");
 const crypto = require("crypto");
 const cache = require("memory-cache");
 const jwt = require("jsonwebtoken");
-
-const regexEmail = require("regex-email");
 const { emit } = require("nodemon");
-const baseResponseStatus = require("../../../config/baseResponseStatus");
+
 
 /**
  * API No. 0
