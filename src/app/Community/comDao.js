@@ -87,14 +87,14 @@ async function deleteLike(connection, userId, postId) {
 }
 
 // 댓글 등록
-async function insertComment(connection, postId, userId, content) {
-    const insertCommentParams = [postId, userId, content];
+async function insertComment(connection, insertCommentParams) {
+
     const insertCommentQuery = `
     INSERT INTO Comment(postId, userId, content)
-    VALUES('?', '?', '?');
+    VALUES(?, ?, ?);
     `;
 
-    const insertCommentRow = await connection.query(insertCommentQuery, [postId, userId, content]);
+    const insertCommentRow = await connection.query(insertCommentQuery, insertCommentParams);
 
     return insertCommentRow;
 }

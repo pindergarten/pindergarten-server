@@ -143,13 +143,6 @@ exports.postComments = async function(req, res) {
     const postId = req.params.postId;
     const userIdFromJWT = req.verifiedToken.userId;
 
-    if (!postId) {
-        return res.send(response(baseResponse.COMMENT_POSTID_EMPTY));
-    } else if (!userIdFromJWT) {
-        return res.send(response(baseResponse.COMMENT_USERID_EMPTY));
-    } else if (!content) {
-        return res.send(response(baseResponse.COMMENT_CONTENT_EMPTY));
-    }
 
     const commentResponse = await comService.createComment(postId, userIdFromJWT, content);
 
