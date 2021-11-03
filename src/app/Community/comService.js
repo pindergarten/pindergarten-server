@@ -24,10 +24,10 @@ exports.updateLikeStatus = async function(userId, postId) {
         const userRows = await userProvider.retrieveUser(userId);
         if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
 
-        //postId확인
-        const postRows = await comProvider.retrievePostById(postId);
-        if (postRows.length < 1)
-            return errResponse(baseResponse.POST_ID_EMPTY);
+        // //postId확인
+        // const postRows = await comProvider.retrievePostById(postId);
+
+        // if (postRows[0].length) return errResponse(baseResponse.POST_ID_EMPTY);
 
         //like 테이블 확인
         const likeRows = await comProvider.retrieveLike(
@@ -49,17 +49,19 @@ exports.updateLikeStatus = async function(userId, postId) {
                 isSet: 1,
             });
         } else {
-            // //update
+            // update
             // var status = likeRows[0].status;
             // 해제
             const connection = await pool.getConnection(async(conn) => conn);
-            const starResult = await comDao.deleteLike(
+            const likeResult = await comDao.deleteLike(
                 connection,
                 userId,
                 postId,
             );
             connection.release();
-            return response(baseResponse.SUCCESS, { isSet: 0, });
+            return response(baseResponse.SUCCESS, {
+                isSet: 0,
+            });
         }
     } catch (err) {
         logger.error(`App - updateLikeStatus Service error\n: ${err.message}`);
@@ -69,9 +71,9 @@ exports.updateLikeStatus = async function(userId, postId) {
 
 exports.createComment = async function(postId, userId, content) {
     try {
-        const postCheck = await comProvider.postCheck(postId);
-        if (postCheck.length < 1) {
-            return errResponse(baseResponse.ARTICLE_ARTICLE_NOT_EXIST);
+        const postCheck = await comProvider.retrievePostById(postId);
+        if (!postCheck) {
+            return errResponse(baseResponse.POST_NOT_EXIST);
         }
 
         const insertCommentParams = [postId, userId, content];
@@ -80,7 +82,7 @@ exports.createComment = async function(postId, userId, content) {
         const commentResult = await comDao.insertComment(connection, insertCommentParams);
         connection.release();
 
-        return response(baseResponse.SUCCESS, { "addedComment": commentResult[0].insertId });
+        return response({ "addedComment": commentResult[0].insertId });
     } catch (err) {
         logger.error(`APP - createComment Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);

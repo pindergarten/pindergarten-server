@@ -92,9 +92,8 @@ exports.postLike = async function(req, res) {
     /**
      * path variable : postId
      */
-    const userIdFromJWT = req.verifiedToken.userIdx;
+    const userIdFromJWT = req.verifiedToken.userId;
     const postId = req.params.postId;
-
 
     if (!postId)
         return res.send(response(baseResponse.POST_ID_EMPTY));
@@ -104,9 +103,8 @@ exports.postLike = async function(req, res) {
         userIdFromJWT,
         postId
     );
+
     return res.send(postLikeResponse);
-
-
 };
 
 /**
@@ -141,23 +139,17 @@ exports.postComments = async function(req, res) {
     */
     var { content } = req.body;
     const postId = req.params.postId;
-    const userId = req.verifiedToken.userIdx;
+    const userIdFromJWT = req.verifiedToken.userId;
 
     if (!postId) {
         return res.send(response(baseResponse.COMMENT_POSTID_EMPTY));
-    } else if (!userId) {
+    } else if (!userIdFromJWT) {
         return res.send(response(baseResponse.COMMENT_USERID_EMPTY));
     } else if (!content) {
         return res.send(response(baseResponse.COMMENT_CONTENT_EMPTY));
     }
 
-    const token = req.headers['x-access-token'];
-    const checkJWT = await userProvider.checkJWT(userId);
-    if (checkJWT.length < 1 || token != checkJWT[0].jwt) {
-        return res.send(response(baseResponse.USER_ID_NOT_MATCH));
-    }
+    const commentResponse = await comService.createComment(postId, userIdFromJWT, content);
 
-    const signUpResponse = await commentService.createComment(postId, userId, content);
-
-    return res.send(response(baseResponse.SUCCESS, signUpResponse));
+    return res.send(response(baseResponse.SUCCESS, commentResponse));
 };

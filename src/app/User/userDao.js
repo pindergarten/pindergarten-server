@@ -98,7 +98,7 @@ async function selectJwtToken(connection, userIdx) {
     const selectJWTQuery = `
                 SELECT jwt, userId
                 FROM Token
-                WHERE userId ='?';
+                WHERE userId =?;
                 `;
     const [selectJWTRow] = await connection.query(selectJWTQuery, userIdx);
 

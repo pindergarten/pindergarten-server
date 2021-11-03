@@ -54,7 +54,7 @@ async function selectPostImg(connection, postId) {
 
 // 좋아요 조회
 async function selectLike(connection, userId, postId) {
-    const selectStarQuery = `select id, status from Like where userId=? AND postId=?;`;
+    const selectStarQuery = `SELECT * FROM LikedPost WHERE userId = ? AND postId = ? ;`;
 
     const LikeRows = await connection.query(selectStarQuery, [
         userId,
@@ -76,9 +76,8 @@ async function insertLike(connection, userId, postId) {
 
 // 좋아요 해제
 async function deleteLike(connection, userId, postId) {
-    const deleteLikeQuery = `DELETE
-    FROM LikedPost
-    WHERE userId = '?' AND postId = '?';`;
+    const deleteLikeQuery = `DELETE FROM LikedPost
+    WHERE userId = ? AND postId = ?;`;
 
     const LikeRows = await connection.query(deleteLikeQuery, [
         userId,
@@ -94,30 +93,33 @@ async function insertComment(connection, postId, userId, content) {
     INSERT INTO Comment(postId, userId, content)
     VALUES(?, ?, ?);
     `;
+
     const insertCommentRow = await connection.query(insertCommentQuery, insertCommentParams);
 
     return insertCommentRow;
 }
 
 async function selectComment(connection, postId) {
-    const selectListQuery = `
-    SELECT id,
-    nickname,
-    profileImg,
+    const selectCommentQuery = `
+    SELECT C.id,
+    U.nickname,
+    U.profile_img,
      (CASE
-         WHEN TIMESTAMPDIFF(MINUTE, C.createAt, now()) <= 0 THEN '방금 전'
-         WHEN TIMESTAMPDIFF(MINUTE, C.createAt, NOW()) < 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, C.createAt, NOW()), '분 전')
-         WHEN TIMESTAMPDIFF(HOUR, C.createAt, NOW()) < 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, C.createAt, NOW()), '시간 전')
-         ELSE DATE_FORMAT(C.createAt, "%Y.%m.%d")
+         WHEN TIMESTAMPDIFF(MINUTE, C.created_at, now()) <= 0 THEN '방금 전'
+         WHEN TIMESTAMPDIFF(MINUTE, C.created_at, NOW()) < 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, C.created_at, NOW()), '분 전')
+         WHEN TIMESTAMPDIFF(HOUR, C.created_at, NOW()) < 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, C.created_at, NOW()), '시간 전')
+         ELSE DATE_FORMAT(C.created_at, "%Y.%m.%d")
      END) AS date,
-    content,
+    C.content
    
       FROM Comment C
       INNER JOIN User U on C.userId = U.id
       WHERE postId = ? ;
+
     `;
-    const [selectListRows] = await connection.query(selectListQuery, postId);
-    return selectListRows;
+    const [selectCommentRows] = await connection.query(selectCommentQuery, postId);
+
+    return selectCommentRows;
 }
 
 module.exports = {

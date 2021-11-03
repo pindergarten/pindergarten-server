@@ -120,7 +120,9 @@ module.exports = {
         message: "비밀번호가 틀렸습니다.",
     },
     COMMENT_USERID_EMPTY: {
-
+        isSuccess: false,
+        code: 2020,
+        message: "userId가 없습니다.",
     },
     USER_ID_NOT_MATCH: {
         isSuccess: false,
