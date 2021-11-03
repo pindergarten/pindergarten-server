@@ -7,7 +7,6 @@ const { response, errResponse } = require("../../../config/response");
 const request = require("request");
 const jwt = require("jsonwebtoken");
 
-const regexEmail = require("regex-email");
 const { emit } = require("nodemon");
 
 
@@ -133,7 +132,7 @@ exports.getPostComments = async function(req, res) {
 /*
     API No. 14
     API Name : 댓글 등록 API
-    [POST] /app/post/:postId/comments
+    [POST] /api/post/:postId/comments
 */
 exports.postComments = async function(req, res) {
     /*

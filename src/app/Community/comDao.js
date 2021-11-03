@@ -32,7 +32,9 @@ async function selectPosts(connection) {
 // 아이디로 글 검색
 async function selectPostById(connection, postId) {
     const selectListQuery = `
-    SELECT * FROM Post WHERE  id = ? ORDER BY created_at DESC;
+    SELECT P.id, P.thumbnail, P.content, DATE_FORMAT(P.created_at, "%Y.%m.%d") AS date, U.nickname, U.profile_img
+    FROM Post P  
+    INNER JOIN User U ON P.userId = U.id AND P.id = ?
     `;
     const [selectListRows] = await connection.query(selectListQuery, [postId]);
     console.log(selectListRows)
@@ -40,7 +42,7 @@ async function selectPostById(connection, postId) {
     return selectListRows;
 }
 
-//게시글 이미지들 검색
+// 게시글 이미지들 검색
 async function selectPostImg(connection, postId) {
     const selectPostImgQuery = `
                 SELECT postImageUrl
@@ -51,6 +53,14 @@ async function selectPostImg(connection, postId) {
 
     return postImgRows;
 };
+
+// 게시글 좋아요 조회
+async function selectLikeByPost(connection, postId) {
+    const selectLikeQuery = `SELECT count(*) AS count, * FROM LikedPost WHERE postId = ? ;`;
+    const LikeRows = await connection.query(selectLikeQuery, [postId]);
+
+    return LikeRows;
+}
 
 // 좋아요 조회
 async function selectLike(connection, userId, postId) {
@@ -99,17 +109,15 @@ async function insertComment(connection, insertCommentParams) {
     return insertCommentRow;
 }
 
+
+
 async function selectComment(connection, postId) {
     const selectCommentQuery = `
-    SELECT C.id,
+    SELECT 
+    C.id,
     U.nickname,
     U.profile_img,
-     (CASE
-         WHEN TIMESTAMPDIFF(MINUTE, C.created_at, now()) <= 0 THEN '방금 전'
-         WHEN TIMESTAMPDIFF(MINUTE, C.created_at, NOW()) < 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, C.created_at, NOW()), '분 전')
-         WHEN TIMESTAMPDIFF(HOUR, C.created_at, NOW()) < 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, C.created_at, NOW()), '시간 전')
-         ELSE DATE_FORMAT(C.created_at, "%Y.%m.%d")
-     END) AS date,
+    DATE_FORMAT(C.created_at, "%Y.%m.%d %H:%i") AS date,
     C.content
    
       FROM Comment C

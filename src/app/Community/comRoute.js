@@ -32,4 +32,7 @@ module.exports = function(app) {
 
     // // 17. 댓글 삭제 API 
     // app.patch("/api/posts/:postId/comments", jwtMiddleware, com.patchPostCommentStatus);
+
+    // 18. 신고하기 API
+    //app.post("/api/posts/:postId/declaration", jwtMiddleware, com.postDeclaration);
 }
