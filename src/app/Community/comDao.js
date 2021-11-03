@@ -12,13 +12,15 @@ async function insertPost(connection, userId, title, category, postImgUrl1) {
 async function selectPosts(connection) {
     const selectListQuery = `
     SELECT 
-    U.nickname,
-    U.profile_img,
+    P.id,
     P.content,
-    P.thumbnail
-   
+    P.thumbnail,
+    U.nickname,
+    U.profile_img
+    
       FROM Post P
       INNER JOIN User U on P.userId = U.id
+      ORDER BY P.created_at DESC;
     ;
     `;
     const [selectListRows] = await connection.query(selectListQuery);

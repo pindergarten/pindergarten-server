@@ -127,11 +127,22 @@ module.exports = {
         code: 2020,
         message: "userId를 확인해주세요.",
     },
+    USER_ID_NOT_EXIST: {
+        isSuccess: false,
+        code: 2020,
+        message: "user가 존재하지 않습니다.",
+    },
+    POST_ID_EMPTY: {
+        isSuccess: false,
+        code: 2020,
+        message: "게시글 id가 없습니다.",
+    },
     POST_NOT_EXIST: {
         isSuccess: false,
         code: 2020,
         message: "해당 게시글이 없습니다.",
     },
+
 
 
     //Connection, Transaction 등의 서버 오류

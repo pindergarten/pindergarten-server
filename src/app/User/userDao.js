@@ -23,7 +23,7 @@ async function selectUserNickName(connection, nickName) {
 // userId 회원 조회
 async function selectUserId(connection, userId) {
     const selectUserIdQuery = `
-                   SELECT id, nickname, phone
+                   SELECT id, nickname, phone, profile_img
                    FROM User 
                    WHERE id = ?;
                    `;
