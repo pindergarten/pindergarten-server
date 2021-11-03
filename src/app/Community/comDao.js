@@ -11,7 +11,15 @@ async function insertPost(connection, userId, title, category, postImgUrl1) {
 // 전체 글 검색
 async function selectPosts(connection) {
     const selectListQuery = `
-    SELECT * FROM Post ORDER BY created_at DESC;
+    SELECT 
+    U.nickname,
+    U.profile_img,
+    P.content,
+    P.thumbnail
+   
+      FROM Post P
+      INNER JOIN User U on P.userId = U.id
+    ;
     `;
     const [selectListRows] = await connection.query(selectListQuery);
     console.log(selectListRows)
@@ -55,7 +63,7 @@ async function selectLike(connection, userId, postId) {
 
 // 좋아요 등록
 async function insertLike(connection, userId, postId) {
-    const insertLikeQuery = `INSERT INTO LikedPost(userId, postId) VALUES('?', '?');`;
+    const insertLikeQuery = `INSERT INTO LikedPost(userId, postId) VALUES(?, ?);`;
 
     const LikeRows = await connection.query(insertLikeQuery, [
         userId,
