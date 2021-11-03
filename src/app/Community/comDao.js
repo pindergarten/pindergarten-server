@@ -91,10 +91,10 @@ async function insertComment(connection, postId, userId, content) {
     const insertCommentParams = [postId, userId, content];
     const insertCommentQuery = `
     INSERT INTO Comment(postId, userId, content)
-    VALUES(?, ?, ?);
+    VALUES('?', '?', '?');
     `;
 
-    const insertCommentRow = await connection.query(insertCommentQuery, insertCommentParams);
+    const insertCommentRow = await connection.query(insertCommentQuery, [postId, userId, content]);
 
     return insertCommentRow;
 }

@@ -21,7 +21,12 @@ exports.getPosts = async function(req, res) {
 
     const postResult = await comProvider.retrievePosts();
 
-    return res.send(response(baseResponse.SUCCESS, postResult));
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "allposts": postResult
+    });
 };
 
 /**

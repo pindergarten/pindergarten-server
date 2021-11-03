@@ -27,7 +27,7 @@ exports.updateLike = async function(userId, postId) {
         //postId확인
         const postRows = await comProvider.retrievePostById(postId);
 
-        if (!postRows) return errResponse(baseResponse.POST_ID_EMPTY);
+        if (!postRows) return errResponse(baseResponse.POST_NOT_EXIST);
 
         //like 테이블 확인
         const likeRows = await comProvider.retrieveLike(
@@ -71,8 +71,13 @@ exports.updateLike = async function(userId, postId) {
 
 exports.createComment = async function(postId, userId, content) {
     try {
-        const postCheck = await comProvider.retrievePostById(postId);
-        if (!postCheck) {
+        //userId 확인
+        const userRows = await userProvider.retrieveUser(userId);
+        if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
+
+        //postId 확인
+        const postRows = await comProvider.retrievePostById(postId);
+        if (!postRows) {
             return errResponse(baseResponse.POST_NOT_EXIST);
         }
 
