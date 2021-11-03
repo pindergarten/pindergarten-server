@@ -46,7 +46,12 @@ exports.getPostById = async function(req, res) {
         postId
     );
 
-    return res.send(postResult);
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "post": postResult
+    });
 };
 
 /**
@@ -117,6 +122,7 @@ exports.postLike = async function(req, res) {
  * [GET] /api/posts/:postId/comments
  */
 exports.getPostComments = async function(req, res) {
+
     /**
      * path variable : postId
      */

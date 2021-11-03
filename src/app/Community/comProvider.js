@@ -31,14 +31,25 @@ exports.retrievePostById = async function(postId) {
         }
         post.imgUrls = imgArray;
 
+        // 좋아요 개수 추가
+        const likeResult = await comDao.selectLikeByPost(connection, postId);
+
+        // 댓글 개수 추가
+        const commentResult = await comDao.selectCommentByPost(connection, postId);
+
+        post.likeCount = likeResult[0][0]['count'];
+        post.commentCount = commentResult[0][0]['count'];
+
+
         await connection.commit();
 
         connection.release();
+
         if (postResult == undefined || postResult == null)
             return response(baseResponse.POST_NOT_EXIST);
 
 
-        return response(baseResponse.SUCCESS, post);
+        return postResult[0];
     } catch (err) {
         logger.error(`App - retrievePost Error\n: ${err.message}`);
         await connection.rollback();

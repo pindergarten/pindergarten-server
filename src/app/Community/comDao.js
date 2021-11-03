@@ -56,7 +56,7 @@ async function selectPostImg(connection, postId) {
 
 // 게시글 좋아요 조회
 async function selectLikeByPost(connection, postId) {
-    const selectLikeQuery = `SELECT count(*) AS count, * FROM LikedPost WHERE postId = ? ;`;
+    const selectLikeQuery = `SELECT count(*) AS count FROM LikedPost WHERE postId = ? ;`;
     const LikeRows = await connection.query(selectLikeQuery, [postId]);
 
     return LikeRows;
@@ -93,6 +93,13 @@ async function deleteLike(connection, userId, postId) {
         userId,
         postId,
     ]);
+    return LikeRows;
+}
+// 게시글 댓글 개수 조회
+async function selectCommentByPost(connection, postId) {
+    const selectLikeQuery = `SELECT count(*) AS count FROM Comment WHERE postId = ? ;`;
+    const LikeRows = await connection.query(selectLikeQuery, [postId]);
+
     return LikeRows;
 }
 
@@ -135,9 +142,11 @@ module.exports = {
     selectPosts,
     selectPostById,
     selectPostImg,
+    selectLikeByPost,
     insertLike,
     deleteLike,
     selectLike,
+    selectCommentByPost,
     insertComment,
     selectComment
 }
