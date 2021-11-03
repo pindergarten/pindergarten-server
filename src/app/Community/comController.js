@@ -21,7 +21,7 @@ exports.getPosts = async function(req, res) {
 
     const postResult = await comProvider.retrievePosts();
 
-    return res.send(response(baseResponse.SUCCESS, postResult));
+    return res.send(response(postResult));
 };
 
 /**
@@ -42,7 +42,7 @@ exports.getPostById = async function(req, res) {
         postId
     );
 
-    return res.send(response(baseResponse.SUCCESS, postResult));
+    return res.send(postResult);
 };
 
 /**

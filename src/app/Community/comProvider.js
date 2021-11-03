@@ -1,6 +1,7 @@
-const baseResponseStatus = require("../../../config/baseResponseStatus");
+const baseResponse = require("../../../config/baseResponseStatus");
 const { pool } = require("../../../config/database");
 const { logger } = require("../../../config/winston");
+const { response, errResponse } = require("../../../config/response");
 
 const comDao = require("./comDao");
 
@@ -15,12 +16,35 @@ exports.retrievePosts = async function() {
 };
 
 exports.retrievePostById = async function(postId) {
-
     const connection = await pool.getConnection(async(conn) => conn);
-    const postListResult = await comDao.selectPostById(connection, postId);
-    connection.release();
+    try {
+        await connection.beginTransaction();
 
-    return postListResult;
+        const postResult = await comDao.selectPostById(connection, postId);
+        const post = postResult[0];
+
+        // 이미지 따로 추가
+        const imgArray = [];
+        const postImgResult = await comDao.selectPostImg(connection, postId);
+        for (img of postImgResult) {
+            imgArray.push(img);
+        }
+        post.imgUrls = imgArray;
+
+        await connection.commit();
+
+        connection.release();
+        if (postResult == undefined || postResult == null)
+            return response(baseResponse.POST_NOT_EXIST);
+
+
+        return response(baseResponse.SUCCESS, post);
+    } catch (err) {
+        logger.error(`App - retrievePost Error\n: ${err.message}`);
+        await connection.rollback();
+        connection.release();
+        return errResponse(baseResponse.DB_ERROR);
+    }
 
 }
 

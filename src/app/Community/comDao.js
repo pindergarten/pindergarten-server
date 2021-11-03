@@ -30,6 +30,18 @@ async function selectPostById(connection, postId) {
     return selectListRows;
 }
 
+//게시글 이미지들 검색
+async function selectPostImg(connection, postId) {
+    const selectPostImgQuery = `
+                SELECT postImageUrl
+                FROM PostImg
+                WHERE postId = ?;
+                `;
+    const [postImgRows] = await connection.query(selectPostImgQuery, postId);
+
+    return postImgRows;
+};
+
 // 좋아요 조회
 async function selectLike(connection, userId, postId) {
     const selectStarQuery = `select id, status from Like where userId=? AND postId=?;`;
@@ -89,6 +101,7 @@ module.exports = {
     insertPost,
     selectPosts,
     selectPostById,
+    selectPostImg,
     insertLike,
     selectLike,
     insertComment,
