@@ -55,9 +55,22 @@ async function selectLike(connection, userId, postId) {
 
 // 좋아요 등록
 async function insertLike(connection, userId, postId) {
-    const insertStarQuery = `INSERT INTO Like(userId, postId) VALUES(?, ?);`;
+    const insertLikeQuery = `INSERT INTO LikedPost(userId, postId) VALUES('?', '?');`;
 
-    const LikeRows = await connection.query(insertStarQuery, [
+    const LikeRows = await connection.query(insertLikeQuery, [
+        userId,
+        postId,
+    ]);
+    return LikeRows;
+}
+
+// 좋아요 해제
+async function deleteLike(connection, userId, postId) {
+    const deleteLikeQuery = `DELETE
+    FROM LikedPost
+    WHERE userId = '?' AND postId = '?';`;
+
+    const LikeRows = await connection.query(deleteLikeQuery, [
         userId,
         postId,
     ]);
@@ -103,6 +116,7 @@ module.exports = {
     selectPostById,
     selectPostImg,
     insertLike,
+    deleteLike,
     selectLike,
     insertComment,
     selectComment

@@ -21,7 +21,7 @@ exports.getPosts = async function(req, res) {
 
     const postResult = await comProvider.retrievePosts();
 
-    return res.send(postResult);
+    return res.send(response(baseResponse.SUCCESS, postResult));
 };
 
 /**
@@ -95,6 +95,7 @@ exports.postLike = async function(req, res) {
     const userIdFromJWT = req.verifiedToken.userIdx;
     const postId = req.params.postId;
 
+
     if (!postId)
         return res.send(response(baseResponse.POST_ID_EMPTY));
 
@@ -104,6 +105,7 @@ exports.postLike = async function(req, res) {
         postId
     );
     return res.send(postLikeResponse);
+
 
 };
 

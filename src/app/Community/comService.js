@@ -25,19 +25,19 @@ exports.updateLikeStatus = async function(userId, postId) {
         if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
 
         //postId확인
-        const postRows = await comProvider.retrievePostById(
-            postId
-        );
+        const postRows = await comProvider.retrievePostById(postId);
         if (postRows.length < 1)
-            return errResponse(baseResponse.POST_ID_NOT_EXIST);
+            return errResponse(baseResponse.POST_ID_EMPTY);
 
         //like 테이블 확인
         const likeRows = await comProvider.retrieveLike(
             userId,
             postId
         );
+
         if (likeRows.length < 1) {
             //insert
+            // 등록
             const connection = await pool.getConnection(async(conn) => conn);
             const likeResult = await comDao.insertLike(
                 connection,
@@ -49,20 +49,20 @@ exports.updateLikeStatus = async function(userId, postId) {
                 isSet: 1,
             });
         } else {
-            //update
-            var status = likeRows[0].status;
-            //등록/해제
+            // //update
+            // var status = likeRows[0].status;
+            // 해제
             const connection = await pool.getConnection(async(conn) => conn);
-            const starResult = await comDao.updatelikeStatus(
+            const starResult = await comDao.deleteLike(
                 connection,
                 userId,
-                postId, !status
+                postId,
             );
             connection.release();
-            return response(baseResponse.SUCCESS, { isSet: status });
+            return response(baseResponse.SUCCESS, { isSet: 0, });
         }
     } catch (err) {
-        logger.error(`App - createStar Service error\n: ${err.message}`);
+        logger.error(`App - updateLikeStatus Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }
 }
