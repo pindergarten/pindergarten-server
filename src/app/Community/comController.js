@@ -99,7 +99,7 @@ exports.postLike = async function(req, res) {
         return res.send(response(baseResponse.POST_ID_EMPTY));
 
     //등록/해제
-    const postLikeResponse = await comService.updateLikeStatus(
+    const postLikeResponse = await comService.updateLike(
         userIdFromJWT,
         postId
     );
@@ -121,10 +121,7 @@ exports.getPostComments = async function(req, res) {
 
     if (!postId) return res.send(response(baseResponse.POST_ID_EMPTY));
 
-    const postResult = await comProvider.retrieveComment(
-        postId
-    );
-
+    const postResult = await comProvider.retrieveComment(postId);
     return res.send(response(baseResponse.SUCCESS, postResult));
 };
 

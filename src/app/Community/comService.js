@@ -18,16 +18,16 @@ exports.createPost = async function(userId, postId) {
 
 }
 
-exports.updateLikeStatus = async function(userId, postId) {
+exports.updateLike = async function(userId, postId) {
     try {
         //userId 확인
         const userRows = await userProvider.retrieveUser(userId);
         if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
 
-        // //postId확인
-        // const postRows = await comProvider.retrievePostById(postId);
+        //postId확인
+        const postRows = await comProvider.retrievePostById(postId);
 
-        // if (postRows[0].length) return errResponse(baseResponse.POST_ID_EMPTY);
+        if (!postRows) return errResponse(baseResponse.POST_ID_EMPTY);
 
         //like 테이블 확인
         const likeRows = await comProvider.retrieveLike(
@@ -35,7 +35,7 @@ exports.updateLikeStatus = async function(userId, postId) {
             postId
         );
 
-        if (likeRows.length < 1) {
+        if (likeRows[0].length < 1) {
             //insert
             // 등록
             const connection = await pool.getConnection(async(conn) => conn);

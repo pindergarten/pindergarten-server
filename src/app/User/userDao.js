@@ -25,7 +25,7 @@ async function selectUserId(connection, userId) {
     const selectUserIdQuery = `
                    SELECT id, nickname, phone, profile_img
                    FROM User 
-                   WHERE id = ?;
+                   WHERE id = '?';
                    `;
     const [userRow] = await connection.query(selectUserIdQuery, userId);
     return userRow;
@@ -94,13 +94,13 @@ async function insertLoginUser(connection, updateJwtTokenParams) {
 
 
 //jwt 조회
-async function selectJwtToken(connection, userIdx) {
+async function selectJwtToken(connection, userId) {
     const selectJWTQuery = `
                 SELECT jwt, userId
                 FROM Token
-                WHERE userId =?;
+                WHERE userId ='?';
                 `;
-    const [selectJWTRow] = await connection.query(selectJWTQuery, userIdx);
+    const [selectJWTRow] = await connection.query(selectJWTQuery, userId);
 
     return selectJWTRow;
 };
@@ -108,7 +108,7 @@ async function selectJwtToken(connection, userIdx) {
 //jwt token 업데이트
 async function updateJwtToken(connection, updateJwtTokenParams) {
     const updateJwtTokenQuery = `
-  UPDATE Token SET jwt=? where id=?
+  UPDATE Token SET jwt=? where userId=?
   `;
     const updateJwtTokenRow = await connection.query(
         updateJwtTokenQuery,
