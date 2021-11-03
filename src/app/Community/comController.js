@@ -21,7 +21,7 @@ exports.getPosts = async function(req, res) {
 
     const postResult = await comProvider.retrievePosts();
 
-    return res.send(response(postResult));
+    return res.send(postResult);
 };
 
 /**

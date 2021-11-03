@@ -11,7 +11,7 @@ async function insertPost(connection, userId, title, category, postImgUrl1) {
 // 전체 글 검색
 async function selectPosts(connection) {
     const selectListQuery = `
-    SELECT * FROM Post;
+    SELECT * FROM Post ORDER BY created_at DESC;
     `;
     const [selectListRows] = await connection.query(selectListQuery);
     console.log(selectListRows)
