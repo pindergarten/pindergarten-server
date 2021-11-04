@@ -87,7 +87,7 @@ exports.createComment = async function(postId, userId, content) {
         const commentResult = await comDao.insertComment(connection, insertCommentParams);
         connection.release();
 
-        return commentResult[0].insertId;
+        return response(baseResponse.SUCCESS);
     } catch (err) {
         logger.error(`APP - createComment Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);

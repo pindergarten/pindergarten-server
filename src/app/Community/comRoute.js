@@ -4,10 +4,10 @@ module.exports = function(app) {
 
 
     // 8. 전체 게시글 조회 API
-    app.get("/api/posts", com.getPosts);
+    app.get("/api/posts", jwtMiddleware, com.getPosts);
 
     // 9. 게시글 상세 조회 API
-    app.get("/api/posts/:postId", com.getPostById);
+    app.get("/api/posts/:postId", jwtMiddleware, com.getPostById);
 
     // // 10. 게시글 작성 API
     // app.post("/api/posts", jwtMiddleware, com.writePost);
@@ -16,7 +16,7 @@ module.exports = function(app) {
     // app.patch("/api/posts", jwtMiddleware, com.patchPost);
 
     // // 12. 게시글 삭제 API
-    // app.patch("/api/posts", jwtMiddleware, com.patchPostStatus);
+    // app.delete("/api/posts", jwtMiddleware, com.deletePost);
 
     // 13. 게시글 좋아요 API
     app.post("/api/posts/:postId/like", jwtMiddleware, com.postLike);

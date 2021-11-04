@@ -12,24 +12,27 @@ const { emit } = require("nodemon");
 
 
 /**
- * API No.
+ * API No.8
  * API Name : 게시글 전체 조회
  * [GET] /api/posts
  */
 exports.getPosts = async function(req, res) {
+    const userIdFromJWT = req.verifiedToken.userId;
+    const postResult = await comProvider.retrievePosts(userIdFromJWT);
 
-    const postResult = await comProvider.retrievePosts();
+
 
     return res.send({
         "isSuccess": true,
         "code": 1000,
         "message": "성공",
         "allposts": postResult
+
     });
 };
 
 /**
- * API No.
+ * API No.9
  * API Name : 게시글 상세 조회
  * [GET] /api/posts/:postId
  */
@@ -37,12 +40,13 @@ exports.getPostById = async function(req, res) {
     /**
      * path variable : postId
      */
-
+    const userIdFromJWT = req.verifiedToken.userId;
     const postId = req.params.postId;
 
     if (!postId) return res.send(response(baseResponse.POST_ID_EMPTY));
 
     const postResult = await comProvider.retrievePostById(
+        userIdFromJWT,
         postId
     );
 
@@ -55,14 +59,14 @@ exports.getPostById = async function(req, res) {
 };
 
 /**
- * API No. 13
+ * API No. 10
  * API Name : 게시글 등록 API
  * [POST] /api/posts
  * body : accessToken
  */
 
 exports.writePost = async function(req, res) {
-    const userId = req.verifiedToken.userIdx; // 내 아이디
+    const userId = req.verifiedToken.userId; // 내 아이디
     var {
         image,
         content,
@@ -93,7 +97,7 @@ exports.writePost = async function(req, res) {
 };
 
 /**
- * API No.
+ * API No.13
  * API Name : 게시글 좋아요 설정/해제
  * [POST] /api/posts/:postId/like
  */
@@ -117,7 +121,7 @@ exports.postLike = async function(req, res) {
 };
 
 /**
- * API No.
+ * API No. 14
  * API Name : 게시글 댓글 조회
  * [GET] /api/posts/:postId/comments
  */
@@ -136,7 +140,7 @@ exports.getPostComments = async function(req, res) {
 };
 
 /*
-    API No. 14
+    API No. 15
     API Name : 댓글 등록 API
     [POST] /api/post/:postId/comments
 */
@@ -151,5 +155,23 @@ exports.postComments = async function(req, res) {
 
     const commentResponse = await comService.createComment(postId, userIdFromJWT, content);
 
-    return res.send(response(baseResponse.SUCCESS, commentResponse));
+    return res.send(commentResponse);
 };
+
+// /*
+//     API No. 18
+//     API Name : 게시글 신고하기 API
+//     [POST] /api/post/:postId/declaration
+// */
+// exports.postDeclaration = async function(req, res) {
+//     /*
+//         path variable : postId
+//     */
+
+//     const postId = req.params.postId;
+//     const userIdFromJWT = req.verifiedToken.userId;
+
+//     const commentResponse = await comService.(postId, userIdFromJWT);
+
+//     return res.send(commentResponse);
+// };

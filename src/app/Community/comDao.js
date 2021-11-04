@@ -32,13 +32,11 @@ async function selectPosts(connection) {
 // 아이디로 글 검색
 async function selectPostById(connection, postId) {
     const selectListQuery = `
-    SELECT P.id, P.thumbnail, P.content, DATE_FORMAT(P.created_at, "%Y.%m.%d") AS date, U.nickname, U.profile_img
+    SELECT P.id, P.content, DATE_FORMAT(P.created_at, "%Y.%m.%d") AS date, U.nickname, U.profile_img
     FROM Post P  
     INNER JOIN User U ON P.userId = U.id AND P.id = ?
     `;
     const [selectListRows] = await connection.query(selectListQuery, [postId]);
-    console.log(selectListRows)
-
     return selectListRows;
 }
 
@@ -54,7 +52,7 @@ async function selectPostImg(connection, postId) {
     return postImgRows;
 };
 
-// 게시글 좋아요 조회
+// 좋아요 개수 조회
 async function selectLikeByPost(connection, postId) {
     const selectLikeQuery = `SELECT count(*) AS count FROM LikedPost WHERE postId = ? ;`;
     const LikeRows = await connection.query(selectLikeQuery, [postId]);
@@ -64,9 +62,9 @@ async function selectLikeByPost(connection, postId) {
 
 // 좋아요 조회
 async function selectLike(connection, userId, postId) {
-    const selectStarQuery = `SELECT * FROM LikedPost WHERE userId = ? AND postId = ? ;`;
+    const selectLikeQuery = `SELECT * FROM LikedPost WHERE userId = ? AND postId = ? ;`;
 
-    const LikeRows = await connection.query(selectStarQuery, [
+    const LikeRows = await connection.query(selectLikeQuery, [
         userId,
         postId
     ]);
@@ -95,12 +93,12 @@ async function deleteLike(connection, userId, postId) {
     ]);
     return LikeRows;
 }
-// 게시글 댓글 개수 조회
+// 댓글 개수 조회
 async function selectCommentByPost(connection, postId) {
-    const selectLikeQuery = `SELECT count(*) AS count FROM Comment WHERE postId = ? ;`;
-    const LikeRows = await connection.query(selectLikeQuery, [postId]);
+    const selectCommentQuery = `SELECT count(*) AS count FROM Comment WHERE postId = ? ;`;
+    const CommentRows = await connection.query(selectCommentQuery, [postId]);
 
-    return LikeRows;
+    return CommentRows;
 }
 
 // 댓글 등록
@@ -111,13 +109,13 @@ async function insertComment(connection, insertCommentParams) {
     VALUES(?, ?, ?);
     `;
 
-    const insertCommentRow = await connection.query(insertCommentQuery, insertCommentParams);
+    const CommentRows = await connection.query(insertCommentQuery, insertCommentParams);
 
-    return insertCommentRow;
+    return CommentRows;
 }
 
 
-
+// 댓글 조회
 async function selectComment(connection, postId) {
     const selectCommentQuery = `
     SELECT 
