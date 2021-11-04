@@ -17,7 +17,32 @@ const { connect } = require("http2");
 exports.createPost = async function(userId, postId) {
 
 }
+exports.deletePost = async function(userId, postId) {
+    try {
+        //userId 확인
+        const userRows = await userProvider.retrieveUser(userId);
+        if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
 
+        //postId 확인
+        const postRows = await comProvider.retrievePostById(postId);
+        if (!postRows) {
+            return errResponse(baseResponse.POST_NOT_EXIST);
+        }
+
+        const deletePostParams = [userId, postId];
+        const connection = await pool.getConnection(async(conn) => conn);
+
+        const deletePostResult = await comDao.deletePost(connection, deletePostParams);
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`APP - deletePost Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+
+
+}
 exports.updateLike = async function(userId, postId) {
     try {
         //userId 확인

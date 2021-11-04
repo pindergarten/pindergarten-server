@@ -66,7 +66,7 @@ exports.getPostById = async function(req, res) {
  */
 
 exports.writePost = async function(req, res) {
-    const userId = req.verifiedToken.userId; // 내 아이디
+    const userId = req.verifiedToken.userIdx; // 내 아이디
     var {
         image,
         content,
@@ -95,6 +95,30 @@ exports.writePost = async function(req, res) {
     const writeResponse = await comService.createPost(postParams, tag);
     return res.send(writeResponse);
 };
+
+/**
+ * API No.13
+ * API Name : 게시글 삭제
+ * [DELETE] /api/posts/:postId
+ */
+exports.deletePost = async function(req, res) {
+    /**
+     * path variable : postId
+     */
+    const userIdFromJWT = req.verifiedToken.userId;
+    const postId = req.params.postId;
+
+    if (!postId)
+        return res.send(response(baseResponse.POST_ID_EMPTY));
+
+    //등록/해제
+    const postLikeResponse = await comService.deletePost(
+        userIdFromJWT,
+        postId
+    );
+
+    return res.send(postLikeResponse);
+}
 
 /**
  * API No.13
@@ -144,7 +168,7 @@ exports.getPostComments = async function(req, res) {
     API Name : 댓글 등록 API
     [POST] /api/post/:postId/comments
 */
-exports.postComments = async function(req, res) {
+exports.postComment = async function(req, res) {
     /*
         Body : content
     */

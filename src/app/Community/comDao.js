@@ -52,6 +52,14 @@ async function selectPostImg(connection, postId) {
     return postImgRows;
 };
 
+//게시글 삭제
+async function deletePost(connection, deletePostParams) {
+    const deletePostQuery = `DELETE FROM Post WHERE userId = ? AND id = ? ;`;
+    const postRows = await connection.query(deletePostQuery, deletePostParams);
+
+    return postRows;
+}
+
 // 좋아요 개수 조회
 async function selectLikeByPost(connection, postId) {
     const selectLikeQuery = `SELECT count(*) AS count FROM LikedPost WHERE postId = ? ;`;
@@ -140,6 +148,7 @@ module.exports = {
     selectPosts,
     selectPostById,
     selectPostImg,
+    deletePost,
     selectLikeByPost,
     insertLike,
     deleteLike,

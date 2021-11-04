@@ -14,9 +14,6 @@ exports.retrievePosts = async function(userId) {
 
         const postListResult = await comDao.selectPosts(connection);
 
-
-
-
         for (post of postListResult) {
             const postLikeResult = await comDao.selectLike(connection, userId, post["id"]);
             if (postLikeResult[0][0] != null)
@@ -88,7 +85,7 @@ exports.retrievePostById = async function(userId, postId) {
 
         return postResult[0];
     } catch (err) {
-        logger.error(`App - retrievePost Error\n: ${err.message}`);
+        logger.error(`App - retrievePostById Error\n: ${err.message}`);
         await connection.rollback();
         connection.release();
         return errResponse(baseResponse.DB_ERROR);
