@@ -17,7 +17,12 @@ exports.getEvents = async function(req, res) {
 
     const eventResult = await eventProvider.retrieveEvents();
 
-    return res.send(response(baseResponse.SUCCESS, eventResult));
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "allevents": eventResult
+    });
 };
 
 /**
@@ -36,7 +41,12 @@ exports.getEventById = async function(req, res) {
 
     const eventResult = await eventProvider.retrieveEventById(eventId);
 
-    return res.send(eventResult);
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "event": eventResult
+    });
 };
 
 /**

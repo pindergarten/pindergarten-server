@@ -119,11 +119,6 @@ module.exports = {
         code: 2020,
         message: "비밀번호가 틀렸습니다.",
     },
-    COMMENT_USERID_EMPTY: {
-        isSuccess: false,
-        code: 2020,
-        message: "userId가 없습니다.",
-    },
     USER_ID_NOT_MATCH: {
         isSuccess: false,
         code: 2020,
@@ -134,15 +129,22 @@ module.exports = {
         code: 2020,
         message: "user가 존재하지 않습니다.",
     },
-    POST_ID_EMPTY: {
-        isSuccess: false,
-        code: 2020,
-        message: "게시글 id가 없습니다.",
-    },
     POST_NOT_EXIST: {
         isSuccess: false,
         code: 2020,
         message: "해당 게시글이 없습니다.",
+    },
+    COMMENT_NOT_EXIST: {
+        isSuccess: false,
+        code: 2020,
+        message: "해당 댓글이 없습니다.",
+
+    },
+    EVENT_NOT_EXIST: {
+        isSuccess: false,
+        code: 2020,
+        message: "해당 이벤트가 없습니다.",
+
     },
 
 

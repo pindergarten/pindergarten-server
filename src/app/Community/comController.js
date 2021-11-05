@@ -109,7 +109,7 @@ exports.deletePost = async function(req, res) {
     const postId = req.params.postId;
 
     if (!postId)
-        return res.send(response(baseResponse.POST_ID_EMPTY));
+        return res.send(response(baseResponse.POST_NOT_EXIST));
 
 
     const deletePostResponse = await comService.deletePost(
@@ -133,7 +133,7 @@ exports.postLike = async function(req, res) {
     const postId = req.params.postId;
 
     if (!postId)
-        return res.send(response(baseResponse.POST_ID_EMPTY));
+        return res.send(response(baseResponse.POST_NOT_EXIST));
 
     //등록/해제
     const postLikeResponse = await comService.updateLike(
@@ -157,7 +157,7 @@ exports.getPostComments = async function(req, res) {
 
     const postId = req.params.postId;
 
-    if (!postId) return res.send(response(baseResponse.POST_ID_EMPTY));
+    if (!postId) return res.send(response(baseResponse.POST_NOT_EXIST));
 
     const commentResult = await comProvider.retrieveComment(postId);
     return res.send({
@@ -188,8 +188,8 @@ exports.postComment = async function(req, res) {
 };
 
 /*
-    API No. 15
-    API Name : 댓글 등록 API
+    API No. 17
+    API Name : 댓글 삭제 API
     [POST] /api/post/:postId/comments/:commentId
 */
 exports.deleteComment = async function(req, res) {
@@ -201,9 +201,9 @@ exports.deleteComment = async function(req, res) {
     const commentId = req.params.commentId;
 
     if (!postId)
-        return res.send(response(baseResponse.POST_ID_EMPTY));
+        return res.send(response(baseResponse.POST_NOT_EXIST));
     if (!commentId)
-        return res.send(response(baseResponse.COMMENT_ID_EMPTY));
+        return res.send(response(baseResponse.COMMENT_NOT_EXIST));
 
     //등록/해제
     const deleteCommentResponse = await comService.deleteComment(
