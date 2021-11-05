@@ -143,6 +143,14 @@ async function selectComment(connection, postId) {
     return selectCommentRows;
 }
 
+// 댓글 삭제
+async function deleteComment(connection, deleteCommentParams) {
+    const deletePostQuery = `DELETE FROM Comment WHERE userId = ? AND postId = ? AND id = ? ;`;
+    const postRows = await connection.query(deletePostQuery, deleteCommentParams);
+
+    return postRows;
+}
+
 module.exports = {
     insertPost,
     selectPosts,
@@ -155,5 +163,6 @@ module.exports = {
     selectLike,
     selectCommentByPost,
     insertComment,
-    selectComment
+    selectComment,
+    deleteComment
 }

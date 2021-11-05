@@ -66,7 +66,7 @@ exports.getPostById = async function(req, res) {
  */
 
 exports.writePost = async function(req, res) {
-    const userId = req.verifiedToken.userIdx; // 내 아이디
+    const userIdFromJWT = req.verifiedToken.userId; // 내 아이디
     var {
         image,
         content,
@@ -111,13 +111,13 @@ exports.deletePost = async function(req, res) {
     if (!postId)
         return res.send(response(baseResponse.POST_ID_EMPTY));
 
-    //등록/해제
-    const postLikeResponse = await comService.deletePost(
+
+    const deletePostResponse = await comService.deletePost(
         userIdFromJWT,
         postId
     );
 
-    return res.send(postLikeResponse);
+    return res.send(deletePostResponse);
 }
 
 /**
@@ -181,6 +181,36 @@ exports.postComment = async function(req, res) {
 
     return res.send(commentResponse);
 };
+
+/*
+    API No. 15
+    API Name : 댓글 등록 API
+    [POST] /api/post/:postId/comments/:commentId
+*/
+exports.deleteComment = async function(req, res) {
+    /**
+     * path variable : postId, commentId
+     */
+    const userIdFromJWT = req.verifiedToken.userId;
+    const postId = req.params.postId;
+    const commentId = req.params.commentId;
+
+    if (!postId)
+        return res.send(response(baseResponse.POST_ID_EMPTY));
+    if (!commentId)
+        return res.send(response(baseResponse.COMMENT_ID_EMPTY));
+
+    //등록/해제
+    const deleteCommentResponse = await comService.deleteComment(
+        userIdFromJWT,
+        postId,
+        commentId
+    );
+
+    return res.send(deleteCommentResponse);
+
+}
+
 
 // /*
 //     API No. 18

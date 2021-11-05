@@ -118,3 +118,29 @@ exports.createComment = async function(postId, userId, content) {
         return errResponse(baseResponse.DB_ERROR);
     }
 };
+
+exports.deleteComment = async function(userId, postId, commentId) {
+    try {
+        //userId 확인
+        const userRows = await userProvider.retrieveUser(userId);
+        if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
+
+        //postId 확인
+        const postRows = await comProvider.retrievePostById(postId);
+        if (!postRows) {
+            return errResponse(baseResponse.POST_NOT_EXIST);
+        }
+
+        const deleteCommentParams = [userId, postId, commentId];
+        const connection = await pool.getConnection(async(conn) => conn);
+
+        const deletePostResult = await comDao.deleteComment(connection, deleteCommentParams);
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`APP - deletePost Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+
+}

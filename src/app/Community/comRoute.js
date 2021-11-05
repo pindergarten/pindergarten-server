@@ -31,7 +31,7 @@ module.exports = function(app) {
     // app.patch("/api/posts/:postId/comments", jwtMiddleware, com.patchComment);
 
     // 17. 댓글 삭제 API 
-    //app.delete("/api/posts/:postId/comments/", jwtMiddleware, com.deleteComment);
+    app.delete("/api/posts/:postId/comments/:commentId", jwtMiddleware, com.deleteComment);
 
     // 18. 신고하기 API
     //app.post("/api/posts/:postId/declaration", jwtMiddleware, com.postDeclaration);
