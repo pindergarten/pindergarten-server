@@ -25,10 +25,10 @@ exports.retrieveEventById = async function(eventId) {
         const event = eventResult[0];
 
         // 좋아요 개수 추가
-        const likeResult = await eventDao.selectLikeByPost(connection, eventId);
+        const likeResult = await eventDao.selectLikeByEvent(connection, eventId);
 
         // 댓글 개수 추가
-        const commentResult = await eventDao.selectCommentByPost(connection, eventId);
+        const commentResult = await eventDao.selectCommentByEvent(connection, eventId);
 
         event.likeCount = likeResult[0][0]['count'];
         event.commentCount = commentResult[0][0]['count'];
@@ -44,9 +44,28 @@ exports.retrieveEventById = async function(eventId) {
 
         return eventResult[0];
     } catch (err) {
-        logger.error(`App - retrievePost Error\n: ${err.message}`);
+        logger.error(`App - retrieveEvent Error\n: ${err.message}`);
         await connection.rollback();
         connection.release();
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+
+// 좋아요 조회
+exports.retrieveLike = async function(userId, eventId) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const likeListResult = await eventDao.selectLike(connection, userId, eventId);
+    connection.release();
+
+    return likeListResult;
+
+}
+
+// 댓글 조회
+exports.retrieveComment = async function(eventId) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const commentListResult = await eventDao.selectComment(connection, eventId);
+    connection.release();
+
+    return commentListResult;
+};
