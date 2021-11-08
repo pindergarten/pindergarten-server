@@ -72,10 +72,10 @@ exports.createComment = async function(eventId, userId, content) {
         if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
 
         //eventId 확인
-        const eventRows = await eventProvider.retrieveEventById(eventId);
-        if (!eventRows) {
-            return errResponse(baseResponse.EVENT_NOT_EXIST);
-        }
+        // const eventRows = await eventProvider.retrieveEventById(eventId);
+        // if (!eventRows) {
+        //     return errResponse(baseResponse.EVENT_NOT_EXIST);
+        // }
 
         const insertCommentParams = [eventId, userId, content];
         const connection = await pool.getConnection(async(conn) => conn);
