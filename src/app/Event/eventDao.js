@@ -85,6 +85,7 @@ async function selectComment(connection, eventId) {
     const selectCommentQuery = `
     SELECT 
     C.id,
+    U.id AS userId,
     U.nickname,
     U.profile_img,
     DATE_FORMAT(C.created_at, "%Y.%m.%d %H:%i") AS date,
