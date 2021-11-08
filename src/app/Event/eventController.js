@@ -34,12 +34,12 @@ exports.getEventById = async function(req, res) {
     /**
      * path variable : eventId
      */
-
+    const userIdFromJWT = req.verifiedToken.userId;
     const eventId = req.params.eventId;
 
     if (!eventId) return res.send(response(baseResponse.EVENT_NOT_EXIST));
 
-    const eventResult = await eventProvider.retrieveEventById(eventId);
+    const eventResult = await eventProvider.retrieveEventById(userIdFromJWT, eventId);
 
     return res.send({
         "isSuccess": true,

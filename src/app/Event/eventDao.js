@@ -92,7 +92,8 @@ async function selectComment(connection, eventId) {
    
       FROM Event_Comment C
       INNER JOIN User U on C.userId = U.id
-      WHERE eventId = ? ;
+      WHERE eventId = ? 
+      ORDER BY date;
 
     `;
     const [selectCommentRows] = await connection.query(selectCommentQuery, eventId);

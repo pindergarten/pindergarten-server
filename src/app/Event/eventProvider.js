@@ -15,7 +15,7 @@ exports.retrieveEvents = async function() {
     return eventListResult;
 }
 
-exports.retrieveEventById = async function(eventId) {
+exports.retrieveEventById = async function(userId, eventId) {
 
     const connection = await pool.getConnection(async(conn) => conn);
     try {
@@ -33,6 +33,12 @@ exports.retrieveEventById = async function(eventId) {
         event.likeCount = likeResult[0][0]['count'];
         event.commentCount = commentResult[0][0]['count'];
 
+        // 유저가 게시글 좋아요했는지 체크 
+        const eventLikeResult = await eventDao.selectLike(connection, userId, eventId);
+        if (eventLikeResult[0][0] != null)
+            event.isLiked = 1;
+        else
+            event.isLiked = 0;
 
         await connection.commit();
 
