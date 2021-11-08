@@ -190,6 +190,7 @@ module.exports = {
     selectPostById,
     selectPostImg,
     deletePost,
+    deletePostContent,
     selectLikeByPost,
     insertLike,
     deleteLike,
