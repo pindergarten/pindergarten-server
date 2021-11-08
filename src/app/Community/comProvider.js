@@ -110,3 +110,12 @@ exports.retrieveComment = async function(postId) {
 
     return cmtResult;
 };
+
+// 내가 신고 했는지
+exports.existDeclaration = async function(userId, postId) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const declarResult = await comDao.existDeclaration(connection, userId, postId);
+    connection.release();
+
+    return declarResult[0];
+};

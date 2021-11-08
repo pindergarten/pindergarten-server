@@ -60,6 +60,15 @@ async function deletePost(connection, deletePostParams) {
     return postRows;
 }
 
+async function deletePostContent(connection, postId) {
+    const deleteListQuery = `
+    DELETE FROM PostImg
+    WHERE postId = ? ;
+  `;
+    const [deleteListRows] = await connection.query(deleteListQuery, postId);
+    return deleteListRows;
+}
+
 // 좋아요 개수 조회
 async function selectLikeByPost(connection, postId) {
     const selectLikeQuery = `SELECT count(*) AS count FROM LikedPost WHERE postId = ? ;`;
@@ -153,6 +162,28 @@ async function deleteComment(connection, deleteCommentParams) {
     return postRows;
 }
 
+// 내가 신고했는지
+async function existDeclaration(connection, userId, postId) {
+    const selectListQuery = `
+    SELECT EXISTS(
+      SELECT *
+      FROM Declaration
+      WHERE postId = ${postId} AND userId = ${userId}
+    ) AS exist;
+    `;
+    const [selectListRows] = await connection.query(selectListQuery);
+    return selectListRows;
+}
+// 게시글 신고
+async function insertDeclaration(connection, insertDeclarationParams) {
+    const insertListQuery = `
+    INSERT INTO Declaration(userId, postId, reason, title, content) 
+    VALUES (?, ?, ?, ?, ?);
+    `;
+    const [insertListRows] = await connection.query(insertListQuery, insertDeclarationParams);
+    return insertListRows;
+}
+
 module.exports = {
     insertPost,
     selectPosts,
@@ -166,5 +197,7 @@ module.exports = {
     selectCommentByPost,
     insertComment,
     selectComment,
-    deleteComment
+    deleteComment,
+    existDeclaration,
+    insertDeclaration
 }

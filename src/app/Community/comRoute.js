@@ -34,5 +34,5 @@ module.exports = function(app) {
     app.delete("/api/posts/:postId/comments/:commentId", jwtMiddleware, com.deleteComment);
 
     // 18. 신고하기 API
-    //app.post("/api/posts/:postId/declaration", jwtMiddleware, com.postDeclaration);
+    app.post("/api/posts/:postId/declaration", jwtMiddleware, com.postDeclaration);
 }

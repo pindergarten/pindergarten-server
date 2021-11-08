@@ -217,20 +217,79 @@ exports.deleteComment = async function(req, res) {
 }
 
 
-// /*
-//     API No. 18
-//     API Name : 게시글 신고하기 API
-//     [POST] /api/post/:postId/declaration
-// */
-// exports.postDeclaration = async function(req, res) {
-//     /*
-//         path variable : postId
-//     */
+/**
+ * API No. 18 
+ * API Name : 신고 API - 해당 글 삭제 + 해당 유저 일주일 정지
+ * [POST] /declaration/post/:postId
+ * 
+ */
 
-//     const postId = req.params.postId;
-//     const userIdFromJWT = req.verifiedToken.userId;
+exports.postDeclaration = async function(req, res) {
+    const userId = req.verifiedToken.userId; // 내 아이디
+    const postId = req.params.postId;
+    const { type } = req.query;
+    const { title, content } = req.body;
 
-//     const commentResponse = await comService.(postId, userIdFromJWT);
+    // 유저 체크
+    const statusCheck = await userProvider.checkJWT(userId);
+    if (statusCheck.length < 1)
+        return res.send(errResponse(baseResponse.SIGNIN_INACTIVE_ACCOUNT));
 
-//     return res.send(commentResponse);
-// };
+    // 공백 체크
+    var re = /^ss*$/;
+
+    if (!postId || re.test(postId))
+        return res.send(errResponse(baseResponse.POST_NOT_EXIST));
+
+
+
+    // 해당 post가 존재하는지
+    // const existPost = await comProvider.existPostByPostId(postId);
+    // if (existPost.length < 1)
+    //     return res.send(errResponse(baseResponse.INVALID_POST));
+
+
+    // type
+    if (!type || re.test(type))
+        return res.send(errResponse(baseResponse.TYPE_INPUT_NUMBER));
+
+
+    var reason = "";
+    if (type == 1) {
+        reason = "광고성 글";
+
+    } else if (type == 2) {
+        reason = "스팸 컨텐츠";
+
+    } else if (type == 3) {
+        reason = "욕설/비방/혐오";
+
+    } else if (type == 4) {
+        reason = "노골적인 폭력 묘사";
+
+    } else {
+        return res.send(errResponse(baseResponse.INPUT_FILTER_WRONG));
+    }
+
+    // 신고 제목, 내용 체크 
+    if (!content || re.test(content))
+        return res.send(errResponse(baseResponse.INPUT_DECLARE_CONTENT));
+
+    if (title.length > 40) {
+        return res.send(errResponse(baseResponse.INPUT_FILTER_WRONG));
+    }
+    if (content.length > 500) {
+        return res.send(errResponse(baseResponse.INPUT_FILTER_WRONG));
+    }
+
+    // 이미 내가 신고했는지
+    const existDeclar = await comProvider.existDeclaration(userId, postId);
+    if (existDeclar.exist == 1)
+        return res.send(errResponse(baseResponse.ALREADY_DECLAR))
+
+    // 신고안했으면 신고하고
+    const declaration = await comService.insertDeclaration(userId, postId, reason, title, content);
+
+
+    return res.send(response({ isSuccess: true, code: 1000, message: "해당 글에 대한 신고 완료" }));
+};
