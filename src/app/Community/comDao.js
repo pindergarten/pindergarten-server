@@ -32,7 +32,7 @@ async function selectPosts(connection) {
 // 아이디로 글 검색
 async function selectPostById(connection, postId) {
     const selectListQuery = `
-    SELECT P.id, P.content, DATE_FORMAT(P.created_at, "%Y.%m.%d") AS date, U.nickname, U.profile_img
+    SELECT P.id, P.content, DATE_FORMAT(P.created_at, "%Y.%m.%d") AS date, U.id AS userId, U.nickname, U.profile_img
     FROM Post P  
     INNER JOIN User U ON P.userId = U.id AND P.id = ?
     `;
