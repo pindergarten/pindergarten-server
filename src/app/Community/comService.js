@@ -28,17 +28,17 @@ exports.deletePost = async function(userId, postId) {
         if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
 
         //postId 확인
-        // const postRows = await comProvider.retrievePostById(postId);
-        // if (!postRows) {
-        //     return errResponse(baseResponse.POST_NOT_EXIST);
-        // }
+        const postRows = await comProvider.retrievePostById(postId);
+        if (!postRows) {
+            return errResponse(baseResponse.POST_NOT_EXIST);
+        }
 
         const postContentResult = await comDao.deletePostContent(connection, postId);
         const postResult = await comDao.deletePost(connection, postId);
 
         await connection.commit() //  트랜잭션 적용 끝 
         connection.release();
-        return;
+        return response(baseResponse.SUCCESS);
 
 
     } catch (err) {
