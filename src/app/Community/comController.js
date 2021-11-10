@@ -288,8 +288,9 @@ exports.postDeclaration = async function(req, res) {
         return res.send(errResponse(baseResponse.ALREADY_DECLAR))
 
     // 신고안했으면 신고하고
-    const declaration = await comService.insertDeclaration(userId, postId, reason, title, content);
+    else {
+        const declaration = await comService.insertDeclaration(userId, postId, reason, title, content);
+        return res.send(declaration);
+    }
 
-
-    return res.send(response({ isSuccess: true, code: 1000, message: "해당 글에 대한 신고 완료" }));
 };

@@ -18,9 +18,9 @@ exports.createPost = async function(userId, postId) {
 
 }
 exports.deletePost = async function(userId, postId) {
-
+    const connection = await pool.getConnection(async(conn) => conn);
     try {
-        const connection = await pool.getConnection(async(conn) => conn);
+        await connection.beginTransaction();
 
         await connection.beginTransaction() // 트랜잭션 적용 시작
             //userId 확인
@@ -28,10 +28,10 @@ exports.deletePost = async function(userId, postId) {
         if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
 
         //postId 확인
-        const postRows = await comProvider.retrievePostById(postId);
-        if (!postRows) {
-            return errResponse(baseResponse.POST_NOT_EXIST);
-        }
+        // const postRows = await comProvider.retrievePostById(postId);
+        // if (!postRows) {
+        //     return errResponse(baseResponse.POST_NOT_EXIST);
+        // }
 
         const postContentResult = await comDao.deletePostContent(connection, postId);
         const postResult = await comDao.deletePost(connection, postId);
@@ -163,7 +163,7 @@ exports.insertDeclaration = async function(userId, postId, reason, title, conten
         const declarationResult = await comDao.insertDeclaration(connection, insertDeclarationParams);
         console.log(`신고된 포스팅 : ${declarationResult.insertId}`);
         connection.release();
-        return;
+        return response(baseResponse.SUCCESS);
 
 
     } catch (err) {
@@ -197,7 +197,7 @@ exports.afterWork = async function(postId) {
 
         await connection.commit() //  트랜잭션 적용 끝
         connection.release();
-        return;
+        return response(baseResponse.SUCCESS);
 
 
     } catch (err) {

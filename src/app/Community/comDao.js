@@ -54,7 +54,7 @@ async function selectPostImg(connection, postId) {
 
 //게시글 삭제
 async function deletePost(connection, deletePostParams) {
-    const deletePostQuery = `DELETE FROM Post WHERE userId = ? AND id = ? ;`;
+    const deletePostQuery = `DELETE FROM Post WHERE id = ? ;`;
     const postRows = await connection.query(deletePostQuery, deletePostParams);
 
     return postRows;

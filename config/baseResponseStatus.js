@@ -146,7 +146,11 @@ module.exports = {
         message: "해당 이벤트가 없습니다.",
 
     },
-
+    ALREADY_DECLAR: {
+        isSuccess: false,
+        code: 2020,
+        message: "이미 신고한 게시물입니다.",
+    },
 
 
     //Connection, Transaction 등의 서버 오류
