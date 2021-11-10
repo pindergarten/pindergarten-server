@@ -108,7 +108,7 @@ exports.deletePost = async function(req, res) {
     const userIdFromJWT = req.verifiedToken.userId;
     const postId = req.params.postId;
 
-    if (!postId)
+    if (postId == null)
         return res.send(response(baseResponse.POST_NOT_EXIST));
 
 

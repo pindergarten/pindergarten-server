@@ -20,16 +20,16 @@ exports.createPost = async function(userId, postId) {
 exports.deletePost = async function(userId, postId) {
     const connection = await pool.getConnection(async(conn) => conn);
     try {
-        await connection.beginTransaction();
 
         await connection.beginTransaction() // 트랜잭션 적용 시작
-            //userId 확인
+
+        //userId 확인
         const userRows = await userProvider.retrieveUser(userId);
         if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
 
         //postId 확인
         const postRows = await comProvider.retrievePostById(postId);
-        if (!postRows) {
+        if (postRows.length == 0) {
             return errResponse(baseResponse.POST_NOT_EXIST);
         }
 
