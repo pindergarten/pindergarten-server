@@ -21,8 +21,9 @@ module.exports = function() {
     require("../src/app/User/userRoute")(app);
     require("../src/app/Community/comRoute")(app);
     require("../src/app/Event/eventRoute")(app);
+    require("../src/app/Pindergarten/pinderRoute")(app);
     // require("../src/app/Pet/petRoute")(app);
-    // require("../src/app/Pindergarten/pinderRoute")(app);
+
 
     return app;
 };
