@@ -32,26 +32,26 @@ exports.getPindergartens = async function(req, res) {
 };
 
 /**
- * API No. 이벤트 상세 조회
- * [GET] /api/events/:eventId
+ * API No. 유치원 상세 조회
+ * [GET] /api/pindergartens/:pindergartenId
  */
-exports.getEventById = async function(req, res) {
+exports.getPindergartenById = async function(req, res) {
 
     /**
-     * path variable : eventId
+     * path variable : pindergartenId
      */
     const userIdFromJWT = req.verifiedToken.userId;
-    const eventId = req.params.eventId;
+    const pindergartenId = req.params.pindergartenId;
 
-    if (!eventId) return res.send(response(baseResponse.EVENT_NOT_EXIST));
+    if (!pindergartenId) return res.send(response(baseResponse.PINDERGARTEN_NOT_EXIST));
 
-    const eventResult = await eventProvider.retrieveEventById(userIdFromJWT, eventId);
+    const pindergartenResult = await pinderProvider.retrievePindergartenById(userIdFromJWT, pindergartenId);
 
     return res.send({
         "isSuccess": true,
         "code": 1000,
         "message": "성공",
-        "event": eventResult
+        "event": pindergartenResult
     });
 };
 
