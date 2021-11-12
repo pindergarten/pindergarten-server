@@ -36,9 +36,35 @@ async function selectPindergartenLike(connection, userId, pindergartenId) {
     return LikeRows;
 }
 
+
+// 좋아요 등록
+async function insertLike(connection, userId, pindergartenId) {
+    const insertLikeQuery = `INSERT INTO Pindergarten_Like(userId, pindergartenId) VALUES(?, ?);`;
+
+    const LikeRows = await connection.query(insertLikeQuery, [
+        userId,
+        pindergartenId,
+    ]);
+    return LikeRows;
+}
+
+// 좋아요 해제
+async function deleteLike(connection, userId, pindergartenId) {
+    const deleteLikeQuery = `DELETE FROM Pindergarten_Like
+    WHERE userId = ? AND pindergartenId = ?;`;
+
+    const LikeRows = await connection.query(deleteLikeQuery, [
+        userId,
+        pindergartenId,
+    ]);
+    return LikeRows;
+}
+
 module.exports = {
     selectPindergartens,
     selectPindergartenById,
     selectPindergartenImg,
-    selectPindergartenLike
+    selectPindergartenLike,
+    insertLike,
+    deleteLike,
 }

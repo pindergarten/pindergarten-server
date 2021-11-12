@@ -41,9 +41,9 @@ exports.retrievePindergartens = async function(userId) {
 }
 
 exports.retrievePindergartenById = async function(userId, pindergartenId) {
-
+    const connection = await pool.getConnection(async(conn) => conn);
     try {
-        const connection = await pool.getConnection(async(conn) => conn);
+
         await connection.beginTransaction();
 
         const pindergartenResult = await pinderDao.selectPindergartenById(connection, pindergartenId);
@@ -81,5 +81,14 @@ exports.retrievePindergartenById = async function(userId, pindergartenId) {
         connection.release();
         return errResponse(baseResponse.DB_ERROR);
     }
+
+}
+
+exports.retrieveLike = async function(userId, pindergartenId) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const likeListResult = await pinderDao.selectPindergartenLike(connection, userId, pindergartenId);
+    connection.release();
+
+    return likeListResult;
 
 }

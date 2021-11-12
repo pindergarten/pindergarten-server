@@ -58,25 +58,25 @@ exports.getPindergartenById = async function(req, res) {
 /**
  * API No.13
  * API Name : 게시글 좋아요 설정/해제
- * [POST] /api/events/:eventId/like
+ * [POST] /api/pindergartens/:pindergartenId/like
  */
-exports.postEventLike = async function(req, res) {
+exports.postPindergartenLike = async function(req, res) {
     /**
-     * path variable : eventId
+     * path variable : pindergarten
      */
     const userIdFromJWT = req.verifiedToken.userId;
-    const eventId = req.params.eventId;
+    const pindergartenId = req.params.pindergartenId;
 
-    if (!eventId)
+    if (!pindergartenId)
         return res.send(response(baseResponse.EVENT_NOT_EXIST));
 
     //등록/해제
-    const postLikeResponse = await eventService.updateLike(
+    const pindergartenLikeResponse = await pinderService.updateLike(
         userIdFromJWT,
-        eventId
+        pindergartenId
     );
 
-    return res.send(postLikeResponse);
+    return res.send(pindergartenLikeResponse);
 
 };
 

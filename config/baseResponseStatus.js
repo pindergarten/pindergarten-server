@@ -151,6 +151,11 @@ module.exports = {
         code: 2020,
         message: "이미 신고한 게시물입니다.",
     },
+    PINDERGARTEN_NOT_EXIST: {
+        isSuccess: false,
+        code: 2020,
+        message: "존재하지 않는 유치원입니다."
+    },
 
 
     //Connection, Transaction 등의 서버 오류
