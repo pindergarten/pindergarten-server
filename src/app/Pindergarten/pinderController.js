@@ -19,8 +19,6 @@ exports.getPindergartens = async function(req, res) {
      * Query String: lat,long 
      */
     const userIdFromJWT = req.verifiedToken.userId;
-
-
     const pindergartensResult = await pinderProvider.retrievePindergartens(userIdFromJWT);
 
     return res.send({
@@ -76,36 +74,56 @@ exports.postPindergartenLike = async function(req, res) {
         pindergartenId
     );
 
-    return res.send(pindergartenLikeResponse);
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "allpindergartens": pindergartenLikeResponse
+    });
 
 };
+
+
+/**
+ * API No.
+ * API Name : 좋아요한 유치원 조회 API
+ * [POST] /api/pindergartens/like
+ */
+exports.getLikedPindergartens = async function(req, res) {
+    const userIdFromJWT = req.verifiedToken.userId;
+    const pindergartenResult = await pinderProvider.retrieveLikedPindergartens(userIdFromJWT);
+
+    return res.send(response(baseResponse.SUCCESS, pindergartenResult));
+}
 
 /**
  * API No.
  * API Name : 유치원 블로그 리뷰 
- * [POST] /api/pindergartens/blog?query=
+ * [GET] /api/pindergartens/blog?query=
  */
 exports.getBlogReview = async function(req, res) {
     /**
      * Query String: query
      */
-    const query = req.query.query;
-    var api_url = `https://openapi.naver.com/v1/search/blog?query=${query}`; // json 결과
+    var api_url = 'https://openapi.naver.com/v1/search/blog?query=' + encodeURI(req.query.query); // json 결과
 
     var request = require('request');
     var options = {
         url: api_url,
-        headers: { 'X-Naver-Client-Id': secret_config.NAVER_CLIENT_ID, 'X-Naver-Client-Secret': secret_config.NAVER_CLIENT_SECRET }
+        headers: {
+            'X-Naver-Client-Id': secret_config.NAVER_CLIENT_ID,
+            'X-Naver-Client-Secret': secret_config.NAVER_CLIENT_SECRET
+        }
     };
 
-    request.post(options, function(error, response, body) {
+    request.get(options, function(error, response, body) {
         if (!error && response.statusCode == 200) {
-            console.log(JSON.parse(body));
+            res.writeHead(200, { 'Content-Type': 'text/json;charset=utf-8' });
+            res.end(body);
         } else {
-            console.log("error = " + response.statusCode);
+            res.status(response.statusCode).end();
+            console.log('error = ' + response.statusCode);
         }
     });
-    return res.send(response(baseResponse.SUCCESS));
-
 
 }

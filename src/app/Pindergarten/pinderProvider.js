@@ -92,3 +92,31 @@ exports.retrieveLike = async function(userId, pindergartenId) {
     return likeListResult;
 
 }
+exports.retrieveLikedPindergartens = async function(userId) {
+
+    const connection = await pool.getConnection(async(conn) => conn);
+    try {
+        await connection.beginTransaction();
+
+        const likeListResult = await pinderDao.selectLikedPindergarten(connection, userId);
+
+        const pindergartenArray = [];
+        for (pindergarten of likeListResult[0]) {
+            const pindergartenResult = await pinderDao.selectPindergartenById(connection, pindergarten["pindergartenId"]);
+            pindergartenArray.push(pindergartenResult);
+        }
+
+        pindergarten.pindergarten = pindergartenArray;
+        await connection.commit();
+        connection.release();
+
+        return pindergarten;
+
+    } catch (err) {
+        logger.error(`App - retrievePindergarten Error\n: ${err.message}`);
+        await connection.rollback();
+        connection.release();
+        return errResponse(baseResponse.DB_ERROR);
+    }
+
+}
