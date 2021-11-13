@@ -2,12 +2,7 @@
 async function selectPindergartens(connection) {
     const selectPindergartenQuery = `
     SELECT id, name, address,thumbnail, latitude, longitude, rating
-    INNER JOIN (SELECT idx,
-        (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)
-        -radians(?))+sin(radians(?))*sin(radians(latitude)))) AS distance 
     FROM Pindergarten
-    HAVING distance <= ?
-    ORDER BY distance) dis on dis.idx=S.idx;
     `;
     const [PindergartenRows] = await connection.query(selectPindergartenQuery, );
 
@@ -75,6 +70,21 @@ async function selectLikedPindergarten(connection, userId) {
     return LikeRows;
 }
 
+// 유치원 키워드 검색
+
+async function searchPindergartens(connection, param) {
+
+    const pindergartenSearchQuery = `
+    SELECT id, name, thumbnail, latitude, longitude, opening_hours, access_guide, ifnull(rating,"") as rating, ifnull(website,"") as website, ifnull(social,"") as social, ifnull(phone,"") as phone
+    FROM Pindergarten
+    WHERE name like concat('%',?,'%');
+`;
+    const [pindergartenRows] = await connection.query(pindergartenSearchQuery, param);
+    return pindergartenRows;
+
+}
+
+
 module.exports = {
     selectPindergartens,
     selectPindergartenById,
@@ -82,5 +92,6 @@ module.exports = {
     selectPindergartenLike,
     insertLike,
     deleteLike,
-    selectLikedPindergarten
+    selectLikedPindergarten,
+    searchPindergartens
 }

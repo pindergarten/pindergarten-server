@@ -120,3 +120,17 @@ exports.retrieveLikedPindergartens = async function(userId) {
     }
 
 }
+
+exports.serchPindergarten = async function(query) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    try {
+
+        const pindergartenResult = await pinderDao.searchPindergartens(connection, query);
+
+        connection.release();
+        return pindergartenResult;
+    } catch (err) {
+        logger.error(`App - searchPindergarten error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

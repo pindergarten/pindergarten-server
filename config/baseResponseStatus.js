@@ -156,7 +156,11 @@ module.exports = {
         code: 2020,
         message: "존재하지 않는 유치원입니다."
     },
-
+    SEARCH_KEYWORD_EMPTY: {
+        isSuccess: false,
+        code: 2020,
+        message: "검색어를 입력해주세요."
+    },
 
     //Connection, Transaction 등의 서버 오류
     DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },

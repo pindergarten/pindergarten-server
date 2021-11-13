@@ -5,8 +5,8 @@ module.exports = function(app) {
     // 전체 유치원 조회 API
     app.get("/api/pindergartens", jwtMiddleware, pinder.getPindergartens);
 
-    // // 유치원 검색 API
-    // app.get("/api/serch/pindergartens", jwtMiddleware, pinder.getSearchPindergartens);
+    // 유치원 검색 API
+    app.get("/api/serch/pindergartens", jwtMiddleware, pinder.searchPindergarten);
 
     // 유치원 정보 상세 조회 API
     app.get("/api/pindergartens/:pindergartenId", jwtMiddleware, pinder.getPindergartenById);

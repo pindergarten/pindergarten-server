@@ -7,7 +7,7 @@ const { response, errResponse } = require("../../../config/response");
 const secret_config = require("../../../config//secret");
 const request = require("request");
 const jwt = require("jsonwebtoken");
-
+const pinderDao = require("./pinderDao");
 const { emit } = require("nodemon");
 
 /**
@@ -28,6 +28,24 @@ exports.getPindergartens = async function(req, res) {
         "allpindergartens": pindergartensResult
     });
 };
+/**
+ * API No. 
+ * API Name : 유치원 키워드 검색 API
+ * [GET] /api/search/pindergartens
+ */
+exports.searchPindergarten = async function(req, res) {
+    const query = req.query.query;
+    const userIdFromJWT = req.verifiedToken.userId;
+
+    if (!query) {
+        return res.send(response(baseResponse.SEARCH_KEYWORD_EMPTY));
+    }
+
+    const pindergartensResult = await pinderProvider.serchPindergarten(query);
+
+    return res.send(response(baseResponse.SUCCESS, pindergartensResult));
+}
+
 
 /**
  * API No. 유치원 상세 조회
