@@ -39,13 +39,13 @@ exports.retrievePindergartens = async function(userId, latitude, longitude) {
 
 }
 
-exports.retrievePindergartenById = async function(userId, pindergartenId) {
+exports.retrievePindergartenById = async function(userId, latitude, longitude, pindergartenId) {
     const connection = await pool.getConnection(async(conn) => conn);
     try {
 
         await connection.beginTransaction();
 
-        const pindergartenResult = await pinderDao.selectPindergartenById(connection, pindergartenId);
+        const pindergartenResult = await pinderDao.selectPindergartenById(connection, latitude, longitude, pindergartenId);
         const pindergarten = pindergartenResult[0];
 
         if (pindergarten == undefined || pindergarten == null)
@@ -69,27 +69,7 @@ exports.retrievePindergartenById = async function(userId, pindergartenId) {
         else
             pindergarten.isLiked = 0;
 
-        var api_url = 'https://openapi.naver.com/v1/search/blog?query=' + encodeURI(pindergarten['name']); // json 결과
 
-        var request = require('request');
-        var options = {
-            url: api_url,
-            headers: {
-                'X-Naver-Client-Id': secret_config.NAVER_CLIENT_ID,
-                'X-Naver-Client-Secret': secret_config.NAVER_CLIENT_SECRET,
-
-            }
-        };
-
-        request.get(options, function(error, response, body) {
-            if (!error && response.statusCode == 200) {
-                res.writeHead(200, { 'Content-Type': 'text/json;charset=utf-8' });
-                res.end(body);
-            } else {
-                res.status(response.statusCode).end();
-                console.log('error = ' + response.statusCode);
-            }
-        });
 
 
         await connection.commit();
