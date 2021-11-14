@@ -19,7 +19,8 @@ exports.getPindergartens = async function(req, res) {
      * Query String: lat,long 
      */
     const userIdFromJWT = req.verifiedToken.userId;
-    const pindergartensResult = await pinderProvider.retrievePindergartens(userIdFromJWT);
+    const { latitude, longitude } = req.query;
+    const pindergartensResult = await pinderProvider.retrievePindergartens(userIdFromJWT, latitude, longitude);
 
     return res.send({
         "isSuccess": true,
@@ -34,6 +35,9 @@ exports.getPindergartens = async function(req, res) {
  * [GET] /api/search/pindergartens
  */
 exports.searchPindergarten = async function(req, res) {
+
+    const latitude = req.query.latitude;
+    const longitude = req.query.longitude;
     const query = req.query.query;
     const userIdFromJWT = req.verifiedToken.userId;
 
@@ -41,7 +45,7 @@ exports.searchPindergarten = async function(req, res) {
         return res.send(response(baseResponse.SEARCH_KEYWORD_EMPTY));
     }
 
-    const pindergartensResult = await pinderProvider.serchPindergarten(query);
+    const pindergartensResult = await pinderProvider.serchPindergarten(latitude, longitude, query);
 
     return res.send(response(baseResponse.SUCCESS, pindergartensResult));
 }
@@ -62,6 +66,8 @@ exports.getPindergartenById = async function(req, res) {
     if (!pindergartenId) return res.send(response(baseResponse.PINDERGARTEN_NOT_EXIST));
 
     const pindergartenResult = await pinderProvider.retrievePindergartenById(userIdFromJWT, pindergartenId);
+
+
 
     return res.send({
         "isSuccess": true,
@@ -108,8 +114,10 @@ exports.postPindergartenLike = async function(req, res) {
  * [POST] /api/pindergartens/like
  */
 exports.getLikedPindergartens = async function(req, res) {
+    const latitude = req.query.latitude;
+    const longitude = req.query.longitude;
     const userIdFromJWT = req.verifiedToken.userId;
-    const pindergartenResult = await pinderProvider.retrieveLikedPindergartens(userIdFromJWT);
+    const pindergartenResult = await pinderProvider.retrieveLikedPindergartens(latitude, longitude, userIdFromJWT);
 
     return res.send(response(baseResponse.SUCCESS, pindergartenResult));
 }
@@ -123,7 +131,8 @@ exports.getBlogReview = async function(req, res) {
     /**
      * Query String: query
      */
-    var api_url = 'https://openapi.naver.com/v1/search/blog?query=' + encodeURI(req.query.query); // json 결과
+    const query = req.query.query;
+    var api_url = 'https://openapi.naver.com/v1/search/blog?query=' + encodeURI(query); // json 결과
 
     var request = require('request');
     var options = {

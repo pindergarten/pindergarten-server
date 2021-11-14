@@ -2,17 +2,17 @@ const baseResponse = require("../../../config/baseResponseStatus");
 const { pool } = require("../../../config/database");
 const { logger } = require("../../../config/winston");
 const { response, errResponse } = require("../../../config/response");
-
+const secret_config = require("../../../config//secret");
 const pinderDao = require("./pinderDao");
 
 // Provider: Read 비즈니스 로직 처리
 
-exports.retrievePindergartens = async function(userId) {
+exports.retrievePindergartens = async function(userId, latitude, longitude) {
     const connection = await pool.getConnection(async(conn) => conn);
     try {
         await connection.beginTransaction();
 
-        const pindergartenListResult = await pinderDao.selectPindergartens(connection);
+        const pindergartenListResult = await pinderDao.selectPindergartens(connection, latitude, longitude);
 
         for (pindergarten of pindergartenListResult) {
             const pindergartenLikeResult = await pinderDao.selectPindergartenLike(connection, userId, pindergarten["id"]);
@@ -24,7 +24,6 @@ exports.retrievePindergartens = async function(userId) {
 
         await connection.commit();
         connection.release();
-
 
         if (pindergartenListResult == undefined || pindergartenListResult == null)
             return response(baseResponse.PINDERGARTEN_NOT_EXIST);
@@ -69,8 +68,31 @@ exports.retrievePindergartenById = async function(userId, pindergartenId) {
             pindergarten.isLiked = 1;
         else
             pindergarten.isLiked = 0;
-        await connection.commit();
 
+        var api_url = 'https://openapi.naver.com/v1/search/blog?query=' + encodeURI(pindergarten['name']); // json 결과
+
+        var request = require('request');
+        var options = {
+            url: api_url,
+            headers: {
+                'X-Naver-Client-Id': secret_config.NAVER_CLIENT_ID,
+                'X-Naver-Client-Secret': secret_config.NAVER_CLIENT_SECRET,
+
+            }
+        };
+
+        request.get(options, function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+                res.writeHead(200, { 'Content-Type': 'text/json;charset=utf-8' });
+                res.end(body);
+            } else {
+                res.status(response.statusCode).end();
+                console.log('error = ' + response.statusCode);
+            }
+        });
+
+
+        await connection.commit();
         connection.release();
 
         return pindergarten;
@@ -92,7 +114,7 @@ exports.retrieveLike = async function(userId, pindergartenId) {
     return likeListResult;
 
 }
-exports.retrieveLikedPindergartens = async function(userId) {
+exports.retrieveLikedPindergartens = async function(latitude, longitude, userId) {
 
     const connection = await pool.getConnection(async(conn) => conn);
     try {
@@ -102,7 +124,7 @@ exports.retrieveLikedPindergartens = async function(userId) {
 
         const pindergartenArray = [];
         for (pindergarten of likeListResult[0]) {
-            const pindergartenResult = await pinderDao.selectPindergartenById(connection, pindergarten["pindergartenId"]);
+            const pindergartenResult = await pinderDao.selectPindergartenById(connection, latitude, longitude, pindergarten["pindergartenId"]);
             pindergartenArray.push(pindergartenResult);
         }
 
@@ -121,11 +143,11 @@ exports.retrieveLikedPindergartens = async function(userId) {
 
 }
 
-exports.serchPindergarten = async function(query) {
+exports.serchPindergarten = async function(latitude, longitude, query) {
     const connection = await pool.getConnection(async(conn) => conn);
     try {
 
-        const pindergartenResult = await pinderDao.searchPindergartens(connection, query);
+        const pindergartenResult = await pinderDao.searchPindergartens(connection, latitude, longitude, query);
 
         connection.release();
         return pindergartenResult;
