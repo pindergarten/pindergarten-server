@@ -120,7 +120,13 @@ exports.getLikedPindergartens = async function(req, res) {
     const userIdFromJWT = req.verifiedToken.userId;
     const pindergartenResult = await pinderProvider.retrieveLikedPindergartens(latitude, longitude, userIdFromJWT);
 
-    return res.send(response(baseResponse.SUCCESS, pindergartenResult));
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "likedPindergartens": pindergartenResult
+    });
+
 }
 
 /**

@@ -105,14 +105,14 @@ exports.retrieveLikedPindergartens = async function(latitude, longitude, userId)
         const pindergartenArray = [];
         for (pindergarten of likeListResult[0]) {
             const pindergartenResult = await pinderDao.selectPindergartenById(connection, latitude, longitude, pindergarten["pindergartenId"]);
-            pindergartenArray.push(pindergartenResult);
+            pindergartenArray.push(pindergartenResult[0]);
         }
 
         pindergarten.pindergarten = pindergartenArray;
         await connection.commit();
         connection.release();
 
-        return pindergarten;
+        return pindergarten.pindergarten;
 
     } catch (err) {
         logger.error(`App - retrievePindergarten Error\n: ${err.message}`);
