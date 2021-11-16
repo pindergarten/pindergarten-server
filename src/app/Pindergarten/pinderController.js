@@ -74,7 +74,7 @@ exports.getPindergartenById = async function(req, res) {
         "isSuccess": true,
         "code": 1000,
         "message": "성공",
-        "event": pindergartenResult
+        "pindergarten": pindergartenResult
     });
 };
 
