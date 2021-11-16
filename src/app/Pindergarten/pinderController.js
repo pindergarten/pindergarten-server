@@ -104,12 +104,7 @@ exports.postPindergartenLike = async function(req, res) {
         pindergartenId
     );
 
-    return res.send({
-        "isSuccess": true,
-        "code": 1000,
-        "message": "성공",
-        "allpindergartens": pindergartenLikeResponse
-    });
+    return res.send(pindergartenLikeResponse);
 
 };
 
