@@ -11,6 +11,21 @@ async function selectPindergartens(connection, latitude, longitude) {
 
     return PindergartenRows;
 }
+
+async function selectNearPindergartens(connection, latitude, longitude) {
+    const selectPindergartenQuery = `
+    SELECT id, name, address, thumbnail, latitude, longitude, rating,
+        (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)
+	    -radians(?))+sin(radians(?))*sin(radians(latitude)))) AS distance
+    FROM Pindergarten 
+    ORDER BY distance 
+    LIMIT 10
+    `;
+    const [PindergartenRows] = await connection.query(selectPindergartenQuery, [latitude, longitude, latitude]);
+
+    return PindergartenRows;
+}
+
 async function selectPindergartenById(connection, latitude, longitude, pindergartenId) {
     const selectPindergartenQuery = `
     SELECT * , (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)
@@ -95,6 +110,7 @@ async function searchPindergartens(connection, latitude, longitude, query) {
 
 module.exports = {
     selectPindergartens,
+    selectNearPindergartens,
     selectPindergartenById,
     selectPindergartenImg,
     selectPindergartenLike,

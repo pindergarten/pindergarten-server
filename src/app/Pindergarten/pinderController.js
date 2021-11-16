@@ -29,6 +29,21 @@ exports.getPindergartens = async function(req, res) {
         "allpindergartens": pindergartensResult
     });
 };
+exports.getNearPindergartens = async function(req, res) {
+    /**
+     * Query String: lat,long 
+     */
+    const userIdFromJWT = req.verifiedToken.userId;
+    const { latitude, longitude } = req.query;
+    const pindergartensResult = await pinderProvider.retrieveNearPindergartens(userIdFromJWT, latitude, longitude);
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "nearPindergartens": pindergartensResult
+    })
+}
+
 /**
  * API No. 
  * API Name : 유치원 키워드 검색 API

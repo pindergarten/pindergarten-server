@@ -38,6 +38,36 @@ exports.retrievePindergartens = async function(userId, latitude, longitude) {
     }
 
 }
+exports.retrieveNearPindergartens = async function(userId, latitude, longitude) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    try {
+        await connection.beginTransaction();
+
+        const pindergartenListResult = await pinderDao.selectNearPindergartens(connection, latitude, longitude);
+
+        for (pindergarten of pindergartenListResult) {
+            const pindergartenLikeResult = await pinderDao.selectPindergartenLike(connection, userId, pindergarten["id"]);
+            if (pindergartenLikeResult[0][0] != null)
+                pindergarten.isLiked = 1;
+            else
+                pindergarten.isLiked = 0;
+        }
+
+        await connection.commit();
+        connection.release();
+
+        if (pindergartenListResult == undefined || pindergartenListResult == null)
+            return response(baseResponse.PINDERGARTEN_NOT_EXIST);
+
+        return pindergartenListResult;
+
+    } catch (err) {
+        logger.error(`App - retrieveNearPindergarten Error\n: ${err.message}`);
+        await connection.rollback();
+        connection.release();
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
 
 exports.retrievePindergartenById = async function(userId, latitude, longitude, pindergartenId) {
     const connection = await pool.getConnection(async(conn) => conn);
