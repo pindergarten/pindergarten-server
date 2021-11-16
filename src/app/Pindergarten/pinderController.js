@@ -47,7 +47,12 @@ exports.searchPindergarten = async function(req, res) {
 
     const pindergartensResult = await pinderProvider.serchPindergarten(latitude, longitude, query);
 
-    return res.send(response(baseResponse.SUCCESS, pindergartensResult));
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "searchPindergartens": pindergartensResult
+    });
 }
 
 

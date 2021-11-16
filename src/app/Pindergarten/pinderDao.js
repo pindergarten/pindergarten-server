@@ -13,7 +13,7 @@ async function selectPindergartens(connection, latitude, longitude) {
 }
 async function selectPindergartenById(connection, latitude, longitude, pindergartenId) {
     const selectPindergartenQuery = `
-    SELECT * ,  (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)
+    SELECT * , (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)
     -radians(?))+sin(radians(?))*sin(radians(latitude)))) AS distance
     FROM Pindergarten
     WHERE id = ?;
@@ -80,7 +80,7 @@ async function selectLikedPindergarten(connection, userId) {
 async function searchPindergartens(connection, latitude, longitude, query) {
 
     const pindergartenSearchQuery = `
-    SELECT id, name, thumbnail, latitude, longitude, opening_hours, access_guide, ifnull(rating,"") as rating, ifnull(website,"") as website, ifnull(social,"") as social, ifnull(phone,"") as phone, 
+    SELECT id, name,address,  thumbnail, latitude, longitude, opening_hours, access_guide,ifnull(rating,"") as rating, ifnull(website,"") as website, ifnull(social,"") as social, ifnull(phone,"") as phone, 
      (6371 * acos(cos(radians( ? )) * cos(radians(latitude)) * cos(radians(longitude) -
         radians( ? )) + sin(radians( ? )) * sin(radians(latitude)))) AS distance
     FROM Pindergarten
