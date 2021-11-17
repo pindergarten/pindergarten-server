@@ -69,13 +69,13 @@ exports.retrieveNearPindergartens = async function(userId, latitude, longitude) 
     }
 }
 
-exports.retrievePindergartenById = async function(userId, latitude, longitude, pindergartenId) {
+exports.retrievePindergartenById = async function(userId, pindergartenId) {
     const connection = await pool.getConnection(async(conn) => conn);
     try {
 
         await connection.beginTransaction();
 
-        const pindergartenResult = await pinderDao.selectPindergartenById(connection, latitude, longitude, pindergartenId);
+        const pindergartenResult = await pinderDao.selectPindergartenById(connection, pindergartenId);
         const pindergarten = pindergartenResult[0];
 
         if (pindergarten == undefined || pindergarten == null)
@@ -128,20 +128,11 @@ exports.retrieveLikedPindergartens = async function(latitude, longitude, userId)
 
     const connection = await pool.getConnection(async(conn) => conn);
     try {
-        await connection.beginTransaction();
 
-        const likeListResult = await pinderDao.selectLikedPindergarten(connection, userId);
-
-        const pindergartenArray = [];
-        for (pindergarten of likeListResult[0]) {
-            const pindergartenResult = await pinderDao.selectPindergartenById(connection, latitude, longitude, pindergarten["pindergartenId"]);
-            pindergartenArray.push(pindergartenResult[0]);
-        }
-
-        await connection.commit();
+        const likeListResult = await pinderDao.selectLikedPindergarten(connection, userId, latitude, longitude);
         connection.release();
 
-        return pindergartenArray;
+        return likeListResult[0];
 
     } catch (err) {
         logger.error(`App - retrievePindergarten Error\n: ${err.message}`);

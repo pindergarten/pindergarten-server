@@ -26,14 +26,13 @@ async function selectNearPindergartens(connection, latitude, longitude) {
     return PindergartenRows;
 }
 
-async function selectPindergartenById(connection, latitude, longitude, pindergartenId) {
+async function selectPindergartenById(connection, pindergartenId) {
     const selectPindergartenQuery = `
-    SELECT * , (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)
-    -radians(?))+sin(radians(?))*sin(radians(latitude)))) AS distance
+    SELECT * 
     FROM Pindergarten
     WHERE id = ?;
     `;
-    const [PindergartenRows] = await connection.query(selectPindergartenQuery, [latitude, longitude, latitude, pindergartenId]);
+    const [PindergartenRows] = await connection.query(selectPindergartenQuery, [pindergartenId]);
 
     return PindergartenRows;
 }
@@ -82,11 +81,15 @@ async function deleteLike(connection, userId, pindergartenId) {
 
 // 좋아요한 유치원들 조회
 
-async function selectLikedPindergarten(connection, userId) {
-    const selectPindergartenQuery = `SELECT pindergartenId
-    FROM Pindergarten_Like 
-    WHERE userId = ?;`;
-    const LikeRows = await connection.query(selectPindergartenQuery, [userId]);
+async function selectLikedPindergarten(connection, userId, latitude, longitude) {
+    const selectPindergartenQuery = `SELECT P.id, P.name, P.address, P.thumbnail, P.rating,
+    (6371 * acos(cos(radians( ? )) * cos(radians(P.latitude)) * cos(radians(P.longitude) -
+        radians( ? )) + sin(radians( ? )) * sin(radians(P.latitude)))) AS distance
+    FROM Pindergarten_Like L
+    INNER JOIN Pindergarten P on P.id = L.pindergartenId
+    WHERE userId = ?
+    ORDER BY distance;`;
+    const LikeRows = await connection.query(selectPindergartenQuery, [latitude, longitude, latitude, userId]);
 
     return LikeRows;
 }

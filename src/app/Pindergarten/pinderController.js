@@ -29,6 +29,12 @@ exports.getPindergartens = async function(req, res) {
         "allpindergartens": pindergartensResult
     });
 };
+
+/**
+ * API No. 
+ * API Name : 마커 기준 가까운 유치원 10개 조회
+ * [GET] /api/search/pindergartens
+ */
 exports.getNearPindergartens = async function(req, res) {
     /**
      * Query String: lat,long 
@@ -82,11 +88,10 @@ exports.getPindergartenById = async function(req, res) {
      */
     const userIdFromJWT = req.verifiedToken.userId;
     const pindergartenId = req.params.pindergartenId;
-    const latitude = req.query.latitude;
-    const longitude = req.query.longitude;
+
     if (!pindergartenId) return res.send(response(baseResponse.PINDERGARTEN_NOT_EXIST));
 
-    const pindergartenResult = await pinderProvider.retrievePindergartenById(userIdFromJWT, latitude, longitude, pindergartenId);
+    const pindergartenResult = await pinderProvider.retrievePindergartenById(userIdFromJWT, pindergartenId);
 
 
 
