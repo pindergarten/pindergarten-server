@@ -106,6 +106,16 @@ async function searchPindergartens(connection, latitude, longitude, query) {
     return pindergartenRows;
 
 }
+// 좋아요한 유치원들 조회
+
+async function selectReviews(connection, pindergartenId) {
+    const selectPindergartenQuery = `SELECT title,content,date,link
+    FROM Pindergarten_Review 
+    WHERE pindergartenId = ?;`;
+    const LikeRows = await connection.query(selectPindergartenQuery, [pindergartenId]);
+
+    return LikeRows;
+}
 
 
 module.exports = {
@@ -117,5 +127,6 @@ module.exports = {
     insertLike,
     deleteLike,
     selectLikedPindergarten,
-    searchPindergartens
+    searchPindergartens,
+    selectReviews
 }

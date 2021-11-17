@@ -165,3 +165,16 @@ exports.serchPindergarten = async function(latitude, longitude, query) {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+exports.retrieveBlogReviews = async function(pindergartenId) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    try {
+
+        const pindergartenResult = await pinderDao.selectReviews(connection, pindergartenId);
+
+        connection.release();
+        return pindergartenResult[0];
+    } catch (err) {
+        logger.error(`App - retrieveBlogReviews error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

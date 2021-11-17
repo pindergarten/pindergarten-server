@@ -21,5 +21,5 @@ module.exports = function(app) {
     app.get("/api/like/pindergartens", jwtMiddleware, pinder.getLikedPindergartens);
 
     // 네이버 블로그 유치원 검색
-    app.get("/api/blog/search", pinder.getBlogReview);
+    app.get("/api/pindergartens/:pindergartenId/review", pinder.getBlogReview);
 }

@@ -147,32 +147,19 @@ exports.getLikedPindergartens = async function(req, res) {
 /**
  * API No.
  * API Name : 유치원 블로그 리뷰 
- * [GET] /api/pindergartens/blog?query=
+ * [GET] /api/pindergartens/:pindergartenId/review
  */
 exports.getBlogReview = async function(req, res) {
     /**
      * Query String: query
      */
-    const query = req.query.query;
-    var api_url = 'https://openapi.naver.com/v1/search/blog?query=' + encodeURI(query); // json 결과
-
-    var request = require('request');
-    var options = {
-        url: api_url,
-        headers: {
-            'X-Naver-Client-Id': secret_config.NAVER_CLIENT_ID,
-            'X-Naver-Client-Secret': secret_config.NAVER_CLIENT_SECRET
-        }
-    };
-
-    request.get(options, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-            res.writeHead(200, { 'Content-Type': 'text/json;charset=utf-8' });
-            res.end(body);
-        } else {
-            res.status(response.statusCode).end();
-            console.log('error = ' + response.statusCode);
-        }
+    const pindergartenId = req.params.pindergartenId;
+    const pindergartenResult = await pinderProvider.retrieveBlogReviews(pindergartenId);
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "blogReviews": pindergartenResult
     });
 
 }
