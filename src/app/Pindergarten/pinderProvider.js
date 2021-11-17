@@ -138,11 +138,10 @@ exports.retrieveLikedPindergartens = async function(latitude, longitude, userId)
             pindergartenArray.push(pindergartenResult[0]);
         }
 
-        pindergarten.pindergarten = pindergartenArray;
         await connection.commit();
         connection.release();
 
-        return pindergarten.pindergarten;
+        return pindergartenArray;
 
     } catch (err) {
         logger.error(`App - retrievePindergarten Error\n: ${err.message}`);
