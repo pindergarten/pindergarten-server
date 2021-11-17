@@ -95,7 +95,7 @@ async function selectLikedPindergarten(connection, userId) {
 async function searchPindergartens(connection, latitude, longitude, query) {
 
     const pindergartenSearchQuery = `
-    SELECT id, name,address,  thumbnail, latitude, longitude, opening_hours, access_guide,ifnull(rating,"") as rating, ifnull(website,"") as website, ifnull(social,"") as social, ifnull(phone,"") as phone, 
+    SELECT id, name,address,  thumbnail, latitude, longitude, opening_hours, access_guide,ifnull(rating,"") as rating, ifnull(website,"") as website, ifnull(phone,"") as phone, 
      (6371 * acos(cos(radians( ? )) * cos(radians(latitude)) * cos(radians(longitude) -
         radians( ? )) + sin(radians( ? )) * sin(radians(latitude)))) AS distance
     FROM Pindergarten
