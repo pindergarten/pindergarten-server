@@ -161,6 +161,12 @@ module.exports = {
         code: 2020,
         message: "검색어를 입력해주세요."
     },
+    GEO_NOT_EXIST: {
+        isSuccess: false,
+        code: 2020,
+        message: "현위치(위도,경도)를 입력해주세요."
+    },
+
 
     //Connection, Transaction 등의 서버 오류
     DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },

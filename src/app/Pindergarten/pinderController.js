@@ -20,6 +20,11 @@ exports.getPindergartens = async function(req, res) {
      */
     const userIdFromJWT = req.verifiedToken.userId;
     const { latitude, longitude } = req.query;
+
+    if (!latitude || !longitude) {
+        return res.send(response(baseResponse.GEO_NOT_EXIST));
+    }
+
     const pindergartensResult = await pinderProvider.retrievePindergartens(userIdFromJWT, latitude, longitude);
 
     return res.send({
@@ -41,6 +46,9 @@ exports.getNearPindergartens = async function(req, res) {
      */
     const userIdFromJWT = req.verifiedToken.userId;
     const { latitude, longitude } = req.query;
+    if (!latitude || !longitude) {
+        return res.send(response(baseResponse.GEO_NOT_EXIST));
+    }
     const pindergartensResult = await pinderProvider.retrieveNearPindergartens(userIdFromJWT, latitude, longitude);
     return res.send({
         "isSuccess": true,
@@ -61,6 +69,10 @@ exports.searchPindergarten = async function(req, res) {
     const longitude = req.query.longitude;
     const query = req.query.query;
     const userIdFromJWT = req.verifiedToken.userId;
+
+    if (!latitude || !longitude) {
+        return res.send(response(baseResponse.GEO_NOT_EXIST));
+    }
 
     if (!query) {
         return res.send(response(baseResponse.SEARCH_KEYWORD_EMPTY));
@@ -116,7 +128,7 @@ exports.postPindergartenLike = async function(req, res) {
     const pindergartenId = req.params.pindergartenId;
 
     if (!pindergartenId)
-        return res.send(response(baseResponse.EVENT_NOT_EXIST));
+        return res.send(response(baseResponse.PINDERGARTEN_NOT_EXIST));
 
     //등록/해제
     const pindergartenLikeResponse = await pinderService.updateLike(
@@ -140,6 +152,14 @@ exports.getLikedPindergartens = async function(req, res) {
     const userIdFromJWT = req.verifiedToken.userId;
     const pindergartenResult = await pinderProvider.retrieveLikedPindergartens(latitude, longitude, userIdFromJWT);
 
+    if (!latitude || !longitude) {
+        return res.send(response(baseResponse.GEO_NOT_EXIST));
+    }
+
+    if (!pindergartenId)
+        return res.send(response(baseResponse.PINDERGARTEN_NOT_EXIST));
+
+
     return res.send({
         "isSuccess": true,
         "code": 1000,
@@ -155,11 +175,14 @@ exports.getLikedPindergartens = async function(req, res) {
  * [GET] /api/pindergartens/:pindergartenId/review
  */
 exports.getBlogReview = async function(req, res) {
-    /**
-     * Query String: query
-     */
+
     const pindergartenId = req.params.pindergartenId;
+
+    if (!pindergartenId)
+        return res.send(response(baseResponse.PINDERGARTEN_NOT_EXIST));
+
     const pindergartenResult = await pinderProvider.retrieveBlogReviews(pindergartenId);
+
     return res.send({
         "isSuccess": true,
         "code": 1000,
