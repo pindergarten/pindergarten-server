@@ -150,14 +150,13 @@ exports.getLikedPindergartens = async function(req, res) {
     const latitude = req.query.latitude;
     const longitude = req.query.longitude;
     const userIdFromJWT = req.verifiedToken.userId;
-    const pindergartenResult = await pinderProvider.retrieveLikedPindergartens(latitude, longitude, userIdFromJWT);
 
     if (!latitude || !longitude) {
         return res.send(response(baseResponse.GEO_NOT_EXIST));
     }
 
-    if (!pindergartenId)
-        return res.send(response(baseResponse.PINDERGARTEN_NOT_EXIST));
+    const pindergartenResult = await pinderProvider.retrieveLikedPindergartens(latitude, longitude, userIdFromJWT);
+
 
 
     return res.send({

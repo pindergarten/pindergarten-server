@@ -50,7 +50,6 @@ exports.retrievePostById = async function(userId, postId) {
         const post = postResult[0];
 
 
-
         // 이미지 따로 추가
         const imgArray = [];
         const postImgResult = await comDao.selectPostImg(connection, postId);

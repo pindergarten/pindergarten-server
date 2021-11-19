@@ -100,8 +100,6 @@ exports.retrievePindergartenById = async function(userId, pindergartenId) {
             pindergarten.isLiked = 0;
 
 
-
-
         await connection.commit();
         connection.release();
 
@@ -125,10 +123,8 @@ exports.retrieveLike = async function(userId, pindergartenId) {
 
 }
 exports.retrieveLikedPindergartens = async function(latitude, longitude, userId) {
-
-    const connection = await pool.getConnection(async(conn) => conn);
     try {
-
+        const connection = await pool.getConnection(async(conn) => conn);
         const likeListResult = await pinderDao.selectLikedPindergarten(connection, userId, latitude, longitude);
         connection.release();
 

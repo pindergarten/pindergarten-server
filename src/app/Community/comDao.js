@@ -145,7 +145,7 @@ async function selectComment(connection, postId) {
    
       FROM Comment C
       INNER JOIN User U on C.userId = U.id
-      WHERE postId = ? 
+      WHERE postId = ?
       ORDER BY date;
 
     `;

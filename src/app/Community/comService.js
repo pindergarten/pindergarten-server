@@ -27,11 +27,6 @@ exports.deletePost = async function(userId, postId) {
         const userRows = await userProvider.retrieveUser(userId);
         if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
 
-        //postId 확인
-        const postRows = await comProvider.retrievePostById(postId);
-        if (postRows.length == 0) {
-            return errResponse(baseResponse.POST_NOT_EXIST);
-        }
 
         const postContentResult = await comDao.deletePostContent(connection, postId);
         const postResult = await comDao.deletePost(connection, postId);
@@ -58,10 +53,6 @@ exports.updateLike = async function(userId, postId) {
         const userRows = await userProvider.retrieveUser(userId);
         if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
 
-        //postId확인
-        const postRows = await comProvider.retrievePostById(postId);
-
-        if (!postRows) return errResponse(baseResponse.POST_NOT_EXIST);
 
         //like 테이블 확인
         const likeRows = await comProvider.retrieveLike(
@@ -109,11 +100,6 @@ exports.createComment = async function(postId, userId, content) {
         const userRows = await userProvider.retrieveUser(userId);
         if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
 
-        //postId 확인
-        const postRows = await comProvider.retrievePostById(postId);
-        if (!postRows) {
-            return errResponse(baseResponse.POST_NOT_EXIST);
-        }
 
         const insertCommentParams = [postId, userId, content];
         const connection = await pool.getConnection(async(conn) => conn);
@@ -134,11 +120,6 @@ exports.deleteComment = async function(userId, postId, commentId) {
         const userRows = await userProvider.retrieveUser(userId);
         if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
 
-        //postId 확인
-        const postRows = await comProvider.retrievePostById(postId);
-        if (!postRows) {
-            return errResponse(baseResponse.POST_NOT_EXIST);
-        }
 
         const deleteCommentParams = [userId, postId, commentId];
         const connection = await pool.getConnection(async(conn) => conn);
