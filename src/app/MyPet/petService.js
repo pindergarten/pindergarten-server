@@ -29,3 +29,22 @@ exports.createPet = async function(userId, name, profile_image, gender, breed, b
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+exports.deletePet = async function(userId, petId) {
+    try {
+        // //userId 확인
+        // const userRows = await userProvider.retrieveUser(userId);
+        // if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
+
+        // 펫 DB에 있는지 조회 
+
+        const connection = await pool.getConnection(async(conn) => conn);
+
+        const petResult = await petDao.deletePet(connection, petId);
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`APP - deletePet Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

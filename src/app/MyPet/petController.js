@@ -54,3 +54,25 @@ exports.postPet = async function(req, res) {
 
     return res.send(postPetResponse);
 }
+
+/**
+ * API No. 
+ * API Name : 펫 삭제 API
+ * [DELETE] /api/pets/:petId
+ */
+exports.deletePet = async function(req, res) {
+    const userIdFromJWT = req.verifiedToken.userId;
+    const petId = req.params.petId;
+
+    if (!userIdFromJWT)
+        return res.response(baseResponse.USER_ID_NOT_EXIST)
+
+    if (!petId)
+        return res.response(baseResponse.PET_ID_NOT_EXIST)
+
+    // 펫 삭제
+    const deletePetResponse = await petService.deletePet(userIdFromJWT, petId);
+
+    return res.send(deletePetResponse);
+
+}

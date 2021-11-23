@@ -9,8 +9,7 @@ module.exports = function(app) {
     // 펫 등록 API
     app.post("/api/pets", jwtMiddleware, upload.single('profile_image'), pet.postPet);
 
-    // // 펫 삭제 API
-    // app.delete("/api/pets/:petId", jwtMiddleware, pet.deletePet);
-
+    // 펫 삭제 API
+    app.delete("/api/pets/:petId", jwtMiddleware, pet.deletePet);
 
 }

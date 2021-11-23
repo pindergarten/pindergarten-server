@@ -14,13 +14,22 @@ async function insertPet(connection, insertPetParams) {
 
 // 내 펫 조회
 async function selectMyPets(connection, userId) {
-    const selectMyPetsQuery = ` SELECT name, profile_image FROM Pet WHERE userId = ? `;
+    const selectMyPetsQuery = `SELECT name, profile_image FROM Pet WHERE userId = ?; `;
     const PetRows = await connection.query(selectMyPetsQuery, userId);
 
     return PetRows;
 }
 
+async function deletePet(connection, petId) {
+    const deletePetQuery = `DELETE FROM Pet WHERE id = ?;`;
+    const PetRows = await connection.query(deletePetQuery, petId);
+
+    return PetRows;
+}
+
+
 module.exports = {
     insertPet,
-    selectMyPets
+    selectMyPets,
+    deletePet
 }
