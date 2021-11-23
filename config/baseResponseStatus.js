@@ -166,6 +166,11 @@ module.exports = {
         code: 2020,
         message: "현위치(위도,경도)를 입력해주세요."
     },
+    PET_ID_NOT_EXIST: {
+        isSuccess: false,
+        code: 2020,
+        message: "존재하지 않는 펫입니다."
+    },
 
 
     //Connection, Transaction 등의 서버 오류

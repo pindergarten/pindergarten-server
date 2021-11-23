@@ -23,7 +23,12 @@ exports.getPets = async function(req, res) {
     // 펫 조회 
     const getPetsResponse = await petProvider.retrieveMyPets(userIdFromJWT);
 
-    return res.send(getPetsResponse);
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "pets": getPetsResponse
+    });
 }
 
 
@@ -53,6 +58,38 @@ exports.postPet = async function(req, res) {
     const postPetResponse = await petService.createPet(userIdFromJWT, name, profile_image, gender, breed, birth, vaccination, neutering);
 
     return res.send(postPetResponse);
+}
+
+/**
+ * API No. 
+ * API Name : 펫 상세조회 API
+ * [GET] /api/pets/:petId
+ */
+
+exports.getPet = async function(req, res) {
+    const userIdFromJWT = req.verifiedToken.userId;
+    const petId = req.params.petId;
+
+    if (!userIdFromJWT)
+        return res.response(baseResponse.USER_ID_NOT_EXIST);
+    if (!petId)
+        return res.response(baseResponse.PET_ID_NOT_EXIST)
+
+    // 펫 조회 
+    const getPetResponse = await petProvider.retrievePetById(petId);
+    if (getPetResponse.length < 1) return res.send(errResponse(baseResponse.PET_ID_NOT_EXIST));
+    else {
+
+        return res.send({
+            "isSuccess": true,
+            "code": 1000,
+            "message": "성공",
+            'pet': getPetResponse[0]
+        });
+    }
+
+
+
 }
 
 /**

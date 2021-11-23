@@ -12,5 +12,14 @@ exports.retrieveMyPets = async function(userId) {
     const petListResult = await petDao.selectMyPets(connection, userId);
     connection.release();
 
-    return response(baseResponse.SUCCESS, petListResult[0]);
+    return petListResult[0];
+}
+
+exports.retrievePetById = async function(petId) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const petResult = await petDao.selectPetById(connection, petId);
+
+    connection.release();
+
+    return petResult[0];
 }
