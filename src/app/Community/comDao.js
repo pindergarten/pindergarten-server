@@ -112,7 +112,7 @@ async function deleteLike(connection, userId, postId) {
 }
 // 댓글 개수 조회
 async function selectCommentByPost(connection, postId) {
-    const selectCommentQuery = `SELECT count(*) AS count FROM Comment WHERE postId = ? ;`;
+    const selectCommentQuery = `SELECT count(*) AS count FROM Post_Comment WHERE postId = ? ;`;
     const CommentRows = await connection.query(selectCommentQuery, [postId]);
 
     return CommentRows;
@@ -122,7 +122,7 @@ async function selectCommentByPost(connection, postId) {
 async function insertComment(connection, insertCommentParams) {
 
     const insertCommentQuery = `
-    INSERT INTO Comment(postId, userId, content)
+    INSERT INTO Post_Comment(postId, userId, content)
     VALUES(?, ?, ?);
     `;
 
@@ -143,7 +143,7 @@ async function selectComment(connection, postId) {
     DATE_FORMAT(C.created_at, "%Y.%m.%d %H:%i") AS date,
     C.content
    
-      FROM Comment C
+      FROM Post_Comment C
       INNER JOIN User U on C.userId = U.id
       WHERE postId = ?
       ORDER BY date;
@@ -156,7 +156,7 @@ async function selectComment(connection, postId) {
 
 // 댓글 삭제
 async function deleteComment(connection, deleteCommentParams) {
-    const deletePostQuery = `DELETE FROM Comment WHERE userId = ? AND postId = ? AND id = ? ;`;
+    const deletePostQuery = `DELETE FROM Post_Comment WHERE userId = ? AND postId = ? AND id = ? ;`;
     const postRows = await connection.query(deletePostQuery, deleteCommentParams);
 
     return postRows;
