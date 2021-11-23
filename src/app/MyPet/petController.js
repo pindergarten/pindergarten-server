@@ -11,8 +11,26 @@ const { emit } = require("nodemon");
 
 /**
  * API No. 
- * API Name : 펫 등록 API
+ * API Name : 나의 펫 조회 API
  * [GET] /api/pets
+ */
+exports.getPets = async function(req, res) {
+    const userIdFromJWT = req.verifiedToken.userId;
+
+    if (!userIdFromJWT)
+        return res.response(baseResponse.USER_ID_NOT_EXIST)
+
+    // 펫 조회 
+    const getPetsResponse = await petProvider.retrieveMyPets(userIdFromJWT);
+
+    return res.send(getPetsResponse);
+}
+
+
+/**
+ * API No. 
+ * API Name : 펫 등록 API
+ * [POST] /api/pets
  */
 exports.postPet = async function(req, res) {
     const userIdFromJWT = req.verifiedToken.userId;
