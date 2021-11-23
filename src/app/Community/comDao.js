@@ -1,11 +1,21 @@
 // 글 포스팅
-async function insertPost(connection, userId, title, category, postImgUrl1) {
+async function insertPost(connection, insertPostParams) {
     const insertListQuery = `
-    INSERT INTO Post(userId, image,  content) 
+    INSERT INTO Post(userId, thumbnail, content) 
     VALUES (?, ?, ?);
     `;
-    const [insertListRows] = await connection.query(insertListQuery, [userId, title, category, postImgUrl1]);
+    const [insertListRows] = await connection.query(insertListQuery, insertPostParams);
     return insertListRows;
+}
+
+async function insertPostImage(connection, postId, image) {
+    const insertListQuery = `
+    INSERT INTO Post_Image(postId, postImageUrl) 
+    VALUES (?, ?);
+    `;
+    const [insertListRows] = await connection.query(insertListQuery, [postId, image]);
+    return insertListRows;
+
 }
 
 // 전체 글 검색
@@ -186,6 +196,7 @@ async function insertDeclaration(connection, insertDeclarationParams) {
 
 module.exports = {
     insertPost,
+    insertPostImage,
     selectPosts,
     selectPostById,
     selectPostImg,

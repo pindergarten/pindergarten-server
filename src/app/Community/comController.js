@@ -67,33 +67,23 @@ exports.getPostById = async function(req, res) {
 
 exports.writePost = async function(req, res) {
     const userIdFromJWT = req.verifiedToken.userId; // 내 아이디
-    var {
-        image,
-        content,
-        tag
-    } = req.body;
-
-    // 빈 값 체크
-    if (!image)
-        return res.send(response(baseResponse.POST_IMAGE_EMPTY));
-    if (image.length > 12)
-        return res.send(response(baseResponse.POST_IMAGE_LENGTH));
+    const images = req.files;
+    const content = req.body.content;
 
 
-    if (tag) {
-        if (tag.length > 5)
-            return res.send(response(baseResponse.POST_TAG_LENGTH));
-    }
+    const data = images.map(image => image.location)
+
+    if (images == undefined)
+        return res.send(response(baseResponse.FILE_NOT_EXIST));
     if (content) {
         if (content.length > 2000)
             return res.send(response(baseResponse.POST_CONTENT_LENGTH));
     }
 
-    const postParams = [userId, image, content];
-
     // 게시글 등록 
-    const writeResponse = await comService.createPost(postParams, tag);
-    return res.send(writeResponse);
+    const writeResponse = await comService.createPost(userIdFromJWT, data, content);
+
+    return res.send(response(baseResponse.SUCCESS));
 };
 
 /**

@@ -129,11 +129,22 @@ module.exports = {
         code: 2020,
         message: "user가 존재하지 않습니다.",
     },
+    FILE_NOT_EXIST: {
+        isSuccess: false,
+        code: 2020,
+        message: "게시글 등록 시 1개 이상의 사진이 필요합니다.",
+    },
+    POST_CONTENT_LENGTH: {
+        isSuccess: false,
+        code: 2020,
+        message: "본문은 최대 2000자입니다.",
+    },
     POST_NOT_EXIST: {
         isSuccess: false,
         code: 2020,
         message: "해당 게시글이 없습니다.",
     },
+
     COMMENT_NOT_EXIST: {
         isSuccess: false,
         code: 2020,

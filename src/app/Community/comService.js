@@ -14,7 +14,26 @@ const { connect } = require("http2");
 
 // Service: Create, Update, Delete 비즈니스 로직 처리
 
-exports.createPost = async function(userId, postId) {
+exports.createPost = async function(userId, images, content) {
+    try {
+
+        const insertPostParams = [userId, images[0], content];
+        const connection = await pool.getConnection(async(conn) => conn);
+        const insertPostResult = await comDao.insertPost(connection, insertPostParams);
+
+        const postId = insertPostResult.insertId;
+
+        // 이미지 따로 추가
+        for (img of images)
+            var insertpostImageResult = await comDao.insertPostImage(connection, postId, img);
+
+        connection.release();
+        return response(baseResponse.SUCCESS);
+
+    } catch (err) {
+        logger.error(`App - insertPost Service error\n: ${err.message}`);
+        return baseResponse.DB_ERROR;
+    }
 
 }
 exports.deletePost = async function(userId, postId) {
@@ -30,6 +49,7 @@ exports.deletePost = async function(userId, postId) {
 
         const postContentResult = await comDao.deletePostContent(connection, postId);
         const postResult = await comDao.deletePost(connection, postId);
+
 
         await connection.commit() //  트랜잭션 적용 끝 
         connection.release();

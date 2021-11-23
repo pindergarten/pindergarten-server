@@ -1,7 +1,7 @@
 module.exports = function(app) {
     const com = require('./comController');
     const jwtMiddleware = require('../../../config/jwtMiddleware');
-
+    const multer = require('../../../config/multer');
 
     // 8. 전체 게시글 조회 API
     app.get("/api/posts", jwtMiddleware, com.getPosts);
@@ -9,8 +9,8 @@ module.exports = function(app) {
     // 9. 게시글 상세 조회 API
     app.get("/api/posts/:postId", jwtMiddleware, com.getPostById);
 
-    // // 10. 게시글 작성 API
-    // app.post("/api/posts", jwtMiddleware, com.writePost);
+    // 10. 게시글 작성 API
+    app.post("/api/posts", jwtMiddleware, multer.upload_post.array('images', 10), com.writePost);
 
     // // 11. 게시글 수정 API
     // app.patch("/api/posts", jwtMiddleware, com.patchPost);
