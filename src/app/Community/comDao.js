@@ -44,7 +44,7 @@ async function selectPostById(connection, postId) {
 async function selectPostImg(connection, postId) {
     const selectPostImgQuery = `
                 SELECT postImageUrl
-                FROM PostImg
+                FROM Post_Image
                 WHERE postId = ?;
                 `;
     const [postImgRows] = await connection.query(selectPostImgQuery, postId);
@@ -62,7 +62,7 @@ async function deletePost(connection, deletePostParams) {
 
 async function deletePostContent(connection, postId) {
     const deleteListQuery = `
-    DELETE FROM PostImg
+    DELETE FROM Post_Image
     WHERE postId = ? ;
   `;
     const [deleteListRows] = await connection.query(deleteListQuery, postId);
@@ -71,7 +71,7 @@ async function deletePostContent(connection, postId) {
 
 // 좋아요 개수 조회
 async function selectLikeByPost(connection, postId) {
-    const selectLikeQuery = `SELECT count(*) AS count FROM LikedPost WHERE postId = ? ;`;
+    const selectLikeQuery = `SELECT count(*) AS count FROM Post_Like WHERE postId = ? ;`;
     const LikeRows = await connection.query(selectLikeQuery, [postId]);
 
     return LikeRows;
@@ -79,7 +79,7 @@ async function selectLikeByPost(connection, postId) {
 
 // 좋아요 조회
 async function selectLike(connection, userId, postId) {
-    const selectLikeQuery = `SELECT * FROM LikedPost WHERE userId = ? AND postId = ? ;`;
+    const selectLikeQuery = `SELECT * FROM Post_Like WHERE userId = ? AND postId = ? ;`;
 
     const LikeRows = await connection.query(selectLikeQuery, [
         userId,
@@ -90,7 +90,7 @@ async function selectLike(connection, userId, postId) {
 
 // 좋아요 등록
 async function insertLike(connection, userId, postId) {
-    const insertLikeQuery = `INSERT INTO LikedPost(userId, postId) VALUES(?, ?);`;
+    const insertLikeQuery = `INSERT INTO Post_Like(userId, postId) VALUES(?, ?);`;
 
     const LikeRows = await connection.query(insertLikeQuery, [
         userId,
@@ -101,7 +101,7 @@ async function insertLike(connection, userId, postId) {
 
 // 좋아요 해제
 async function deleteLike(connection, userId, postId) {
-    const deleteLikeQuery = `DELETE FROM LikedPost
+    const deleteLikeQuery = `DELETE FROM Post_Like
     WHERE userId = ? AND postId = ?;`;
 
     const LikeRows = await connection.query(deleteLikeQuery, [
