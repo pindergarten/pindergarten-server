@@ -294,6 +294,19 @@ exports.findPassword = async function(req, res) {
     return res.send(findPasswordResponse);
 }
 
+
+/**
+ * API No. 로그아웃
+ * [PATCH] /app/logout
+ */
+exports.signOut = async function(req, res) {
+    const userIdFromJWT = req.verifiedToken.userId;
+
+    const logoutResponse = await userService.patchJwtStatus(userIdFromJWT);
+
+    return res.send(logoutResponse);
+};
+
 /**
  * API No. 회원탈퇴 API
  * [PATCH] /app/users/:userId/status

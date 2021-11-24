@@ -74,7 +74,7 @@ async function selectUserPassword(connection, selectUserPasswordParams) {
 //login user 조회
 async function selectLoginUser(connection, userId) {
     const selectJwtQuery = `
-    SELECT userId FROM Token WHERE userId='?';
+    SELECT userId FROM Token WHERE userId=?;
     `;
     const selectJwtRow = await connection.query(selectJwtQuery, userId);
     return selectJwtRow;
@@ -130,6 +130,15 @@ async function updatePassword(connection, updatePasswordParams) {
     return updatePasswordRow;
 }
 
+async function updateJwtStatus(connection, userId) {
+    const updateJwtStatusQuery = `
+    UPDATE Token SET status='INACTIVATED' where userId=?
+    `;
+    const updateJwtStatusRow = await connection.query(updateJwtStatusQuery, userId);
+    return updateJwtStatusRow;
+
+}
+
 async function updateUserStatus(connection, userId) {
     const updateUserStatusQuery = `UPDATE User SET status='DELETED' WHERE id= ? ;
                 `;
@@ -150,5 +159,6 @@ module.exports = {
     selectJwtToken,
     updateJwtToken,
     updatePassword,
-    updateUserStatus
+    updateJwtStatus,
+    updateUserStatus,
 };

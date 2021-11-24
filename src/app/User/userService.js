@@ -134,6 +134,27 @@ exports.updatePassword = async function(phone, password) {
     }
 }
 
+exports.patchJwtStatus = async function(userId) {
+    try {
+        // jwt table status update
+        const loginUserRows = await userProvider.loginCheck(userId);
+
+        if (loginUserRows[0].length < 1)
+            return errResponse(baseResponse.SIGNIN_NOT_EXIST);
+        if (loginUserRows[0][0].status === 1)
+            return errResponse(baseResponse.SIGNIN_NOT_EXIST);
+
+        const connection = await pool.getConnection(async(conn) => conn);
+        const userIdResult = await userDao.updateJwtStatus(connection, userId);
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - SignOut Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
 exports.updateUserStatus = async function(userId) {
     try {
         //userId 확인

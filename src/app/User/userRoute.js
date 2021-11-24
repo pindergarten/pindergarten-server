@@ -29,8 +29,8 @@ module.exports = function(app) {
     // // 내 게시글(마이페이지) 조회 API
     // app.get("/api/users/:userId", jwtMiddleware, user.getPindergartenById);
 
-    // // 로그아웃
-    // app.get("/api/users/sign-out", jwtMiddleware, user.postPindergartenLike);
+    // 로그아웃
+    app.patch("/api/users/sign-out", jwtMiddleware, user.signOut);
 
     // 회원탈퇴 API
     app.patch("/api/users/:userId/status", jwtMiddleware, user.patchUserStatus);

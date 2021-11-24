@@ -99,7 +99,11 @@ module.exports = {
         isSuccess: false,
         code: 2017,
         message: "비활성화 계정입니다.",
-
+    },
+    SIGNIN_NOT_EXIST: {
+        isSuccess: false,
+        code: 2017,
+        message: "로그인하지 않은 계정입니다.",
     },
     SIGNIN_WITHDRAWAL_ACCOUNT: {
 
