@@ -90,7 +90,7 @@ async function selectLoginUser(connection, userId) {
 //login 추가
 async function insertLoginUser(connection, updateJwtTokenParams) {
     const insertJwtQuery = `
-    INSERT INTO Token(jwt, userId) VALUES(?,'?');
+    INSERT INTO Token(jwt, userId, status) VALUES(?,?,'ACTIVATED');
     `;
     const insertJwtRow = await connection.query(
         insertJwtQuery,
@@ -105,7 +105,7 @@ async function selectJwtToken(connection, userId) {
     const selectJWTQuery = `
                 SELECT jwt, userId
                 FROM Token
-                WHERE userId ='?';
+                WHERE userId =?;
                 `;
     const [selectJWTRow] = await connection.query(selectJWTQuery, userId);
 
@@ -115,7 +115,7 @@ async function selectJwtToken(connection, userId) {
 //jwt token 업데이트
 async function updateJwtToken(connection, updateJwtTokenParams) {
     const updateJwtTokenQuery = `
-  UPDATE Token SET jwt=? where userId=?
+  UPDATE Token SET jwt= ?, status='ACTIVATED' where userId=?
   `;
     const updateJwtTokenRow = await connection.query(
         updateJwtTokenQuery,
@@ -169,4 +169,4 @@ module.exports = {
     updatePassword,
     updateJwtStatus,
     updateUserStatus,
-};
+}

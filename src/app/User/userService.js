@@ -43,7 +43,7 @@ exports.postSignIn = async function(phone, password) {
         // 핸드폰번호 여부 확인
         const phoneNumberRows = await userProvider.phoneNumberCheck(phone);
         if (phoneNumberRows.length < 1) {
-            return errResponse(baseResponse.SIGNIN_PHONENUMBER_WRONG);
+            return errResponse(baseResponse.USER_ID_NOT_EXIST);
         }
 
         // 비밀번호 확인
