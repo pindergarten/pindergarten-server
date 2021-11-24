@@ -70,8 +70,10 @@ exports.writePost = async function(req, res) {
     const images = req.files;
     const content = req.body.content;
 
+    console.log(images);
 
     const data = images.map(image => image.location)
+    console.log(data);
 
     if (images == undefined)
         return res.send(response(baseResponse.FILE_NOT_EXIST));
