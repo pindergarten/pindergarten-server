@@ -109,6 +109,23 @@ exports.postSignIn = async function(phone, password) {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+exports.updateUserInfo = async function(userId, profile_image) {
+    try {
+        // //userId 확인
+        // const userRows = await userProvider.retrieveUser(userId);
+        // if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
+
+        const connection = await pool.getConnection(async(conn) => conn);
+
+        const userResult = await userDao.updateUserInfo(connection, userId, profile_image);
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`APP - updateUserInfo Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
 
 exports.updatePassword = async function(phone, password) {
     try {

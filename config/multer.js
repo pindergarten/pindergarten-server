@@ -24,7 +24,6 @@ const upload_profile = multer({
         bucket: 'pindergarten/user',
         acl: 'public-read',
         key: function(req, file, cb) {
-
             var ext = file.mimetype.split('/')[1];
             if (!['png', 'jpg', 'jpeg', 'gif', 'bmp'].includes(ext)) {
                 return cb(new Error('Only images are allowed'));

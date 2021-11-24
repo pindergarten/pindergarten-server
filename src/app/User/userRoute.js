@@ -1,6 +1,7 @@
 module.exports = function(app) {
     const user = require('./userController');
     const jwtMiddleware = require('../../../config/jwtMiddleware');
+    const multer = require('../../../config/multer');
 
     // 0. 테스트 API
     app.get('/api/test', user.getTest)
@@ -29,6 +30,12 @@ module.exports = function(app) {
     // 내 게시글(마이페이지) 조회 API
     app.get("/api/users/post", jwtMiddleware, user.getUserPost);
 
+    // 프로필 조회 API
+    app.get("/api/users/:userId", user.getUserInfo);
+
+    // 내 프로필 수정 API
+    app.post("/api/users/:userId", jwtMiddleware, multer.upload_profile.single('profile_image'), user.updateUserInfo);
+
     // 로그아웃
     app.patch("/api/users/sign-out", jwtMiddleware, user.signOut);
 
@@ -37,5 +44,4 @@ module.exports = function(app) {
 
     // JWT 검증 API
     app.get('/api/auto-login', jwtMiddleware, user.check);
-
 };

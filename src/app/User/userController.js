@@ -295,6 +295,46 @@ exports.findPassword = async function(req, res) {
 }
 
 /**
+ * API No. 사용자 프로필 조회
+ * [GET] /api/users/:userId
+ */
+exports.getUserInfo = async function(req, res) {
+    const userId = req.params.userId;
+
+    if (!userId)
+        return res.response(baseResponse.USER_ID_NOT_EXIST)
+
+
+    const getUserInfoResponse = await userProvider.retrieveUser(userId);
+
+    return res.send(getUserInfoResponse);
+}
+
+/**
+ * API No. 내 프로필 수정
+ * [GET] /api/users/:userId
+ */
+exports.updateUserInfo = async function(req, res) {
+    const userId = req.params.userId;
+    const userIdFromJWT = req.verifiedToken.userId;
+
+
+    if (!userIdFromJWT)
+        return res.response(baseResponse.USER_ID_NOT_EXIST)
+
+
+    if (req.file !== undefined)
+        var profile_image = req.file.location;
+    else
+        var profile_image = 'https://pindergarten.s3.ap-northeast-2.amazonaws.com/no_profile.png';
+
+    // 프로필 수정 
+    const postPetResponse = await userService.updateUserInfo(userIdFromJWT, profile_image);
+
+    return res.send(postPetResponse);
+}
+
+/**
  * API No. 내 게시글(마이페이지) 조회
  * [GET] /api/users/:userId/post
  */
@@ -346,6 +386,6 @@ exports.patchUserStatus = async function(req, res) {
  */
 exports.check = async function(req, res) {
     const userIdResult = req.verifiedToken.userId;
-    console.log(userIdResult);
+
     return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
 };

@@ -52,6 +52,16 @@ async function insertUserInfo(connection, insertUserInfoParams) {
     return insertUserInfoRow;
 }
 
+// 유저 수정
+async function updateUserInfo(connection, userId, profile_image) {
+    const insertUserInfoQuery = `
+    UPDATE User SET profile_img= ? WHERE id= ? ;
+`;
+    const insertUserInfoRow = await connection.query(insertUserInfoQuery, [profile_image, userId]);
+
+    return insertUserInfoRow;
+}
+
 // 유저 계정 상태 체크
 async function selectUserAccount(connection, phone) {
     const selectUserAccountQuery = `
@@ -169,4 +179,5 @@ module.exports = {
     updatePassword,
     updateJwtStatus,
     updateUserStatus,
+    updateUserInfo
 }
