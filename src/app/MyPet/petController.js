@@ -51,8 +51,11 @@ exports.postPet = async function(req, res) {
     if (!userIdFromJWT)
         return res.response(baseResponse.USER_ID_NOT_EXIST)
 
+
     if (req.file !== undefined)
         var profile_image = req.file.location;
+    else
+        var profile_image = 'https://pindergarten.s3.ap-northeast-2.amazonaws.com/no_profile.png';
 
     // 펫 등록 
     const postPetResponse = await petService.createPet(userIdFromJWT, name, profile_image, gender, breed, birth, vaccination, neutering);

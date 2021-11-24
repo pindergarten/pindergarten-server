@@ -39,26 +39,32 @@ exports.deletePet = async function(userId, petId) {
         const petResult = await petProvider.retrievePetById(petId);
         if (petResult.length < 1) return errResponse(baseResponse.PET_ID_NOT_EXIST);
         else {
-            const petImage = petResult[0].profile_image.split('/')[4];
+
+
+
             //console.log(petImage);
             const connection = await pool.getConnection(async(conn) => conn);
 
             const deletePet = await petDao.deletePet(connection, petId);
 
-            s3.deleteObject({
-                Bucket: 'pindergarten/pet', // 사용자 버킷 이름
-                Key: petImage
-            }, function(err, data) {
-                if (err) {
-                    console.log('aws s3 delete error')
-                } else {
-                    console.log('aws s3 delete success');
-                }
-            });
-            connection.release();
+            if (petResult[0].profile_image != 'https://pindergarten.s3.ap-northeast-2.amazonaws.com/no_profile.png') {
+                const petImage = petResult[0].profile_image.split('/')[4];
+                s3.deleteObject({
+                    Bucket: 'pindergarten/pet', // 사용자 버킷 이름
+                    Key: petImage
+                }, function(err, data) {
+                    if (err) {
+                        console.log('aws s3 delete error')
+                    } else {
+                        console.log('aws s3 delete success');
+                    }
+                });
+            }
 
+            connection.release();
             return response(baseResponse.SUCCESS);
         }
+
 
     } catch (err) {
         logger.error(`APP - deletePet Service error\n: ${err.message}`);
