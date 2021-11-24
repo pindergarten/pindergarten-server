@@ -21,7 +21,7 @@ async function selectMyPets(connection, userId) {
 }
 
 async function selectPetById(connection, petId) {
-    const selectPetByIdQuery = `SELECT id, name, profile_image, gender, breed, birth, vaccination, neutering FROM Pet WHERE id = ?; `;
+    const selectPetByIdQuery = `SELECT id, name, profile_image, gender, breed, DATE_FORMAT(birth, "%Y-%m-%d") AS birth, vaccination, neutering FROM Pet WHERE id = ?; `;
     const PetRows = await connection.query(selectPetByIdQuery, petId);
 
     return PetRows;
