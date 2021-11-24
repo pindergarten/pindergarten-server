@@ -102,88 +102,88 @@ module.exports = {
     },
     SIGNIN_NOT_EXIST: {
         isSuccess: false,
-        code: 2017,
+        code: 2018,
         message: "로그인하지 않은 계정입니다.",
     },
     SIGNIN_WITHDRAWAL_ACCOUNT: {
 
         isSuccess: false,
-        code: 2018,
+        code: 2019,
         message: "휴대폰 번호가 잘못되었습니다.",
     },
     ALREADY_LOGIN: {
         isSuccess: false,
-        code: 2019,
+        code: 2020,
         message: "이미 로그인 되었습니다.",
 
     },
     SIGNIN_PASSWORD_WRONG: {
 
         isSuccess: false,
-        code: 2020,
-        message: "비밀번호가 틀렸습니다.",
+        code: 2021,
+        message: "비밀번호가 일치하지 않습니다.",
     },
     USER_ID_NOT_MATCH: {
         isSuccess: false,
-        code: 2020,
-        message: "userId를 확인해주세요.",
+        code: 2022,
+        message: "가입하지 않은 회원입니다.",
     },
     USER_ID_NOT_EXIST: {
         isSuccess: false,
-        code: 2020,
-        message: "user가 존재하지 않습니다.",
+        code: 2023,
+        message: "가입하지 않은 회원입니다.",
     },
     FILE_NOT_EXIST: {
         isSuccess: false,
-        code: 2020,
+        code: 2024,
         message: "게시글 등록 시 1개 이상의 사진이 필요합니다.",
     },
     POST_CONTENT_LENGTH: {
         isSuccess: false,
-        code: 2020,
+        code: 2025,
         message: "본문은 최대 2000자입니다.",
     },
     POST_NOT_EXIST: {
         isSuccess: false,
-        code: 2020,
+        code: 2026,
         message: "해당 게시글이 없습니다.",
     },
 
     COMMENT_NOT_EXIST: {
         isSuccess: false,
-        code: 2020,
+        code: 2027,
         message: "해당 댓글이 없습니다.",
 
     },
     EVENT_NOT_EXIST: {
         isSuccess: false,
-        code: 2020,
+        code: 2028,
         message: "해당 이벤트가 없습니다.",
 
     },
     ALREADY_DECLAR: {
         isSuccess: false,
-        code: 2020,
+        code: 2029,
         message: "이미 신고한 게시물입니다.",
     },
     PINDERGARTEN_NOT_EXIST: {
         isSuccess: false,
-        code: 2020,
+        code: 2030,
         message: "존재하지 않는 유치원입니다."
     },
     SEARCH_KEYWORD_EMPTY: {
         isSuccess: false,
-        code: 2020,
+        code: 2031,
         message: "검색어를 입력해주세요."
     },
     GEO_NOT_EXIST: {
         isSuccess: false,
-        code: 2020,
+        code: 2032,
         message: "현위치(위도,경도)를 입력해주세요."
     },
     PET_ID_NOT_EXIST: {
         isSuccess: false,
-        code: 2020,
+        code: 2033,
         message: "존재하지 않는 펫입니다."
     },
 
