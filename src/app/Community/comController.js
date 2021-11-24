@@ -4,6 +4,7 @@ const comProvider = require("./comProvider");
 const comService = require("./comService");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
+const { logger } = require("../../../config/winston");
 const request = require("request");
 const jwt = require("jsonwebtoken");
 
@@ -66,26 +67,35 @@ exports.getPostById = async function(req, res) {
  */
 
 exports.writePost = async function(req, res) {
-    const userIdFromJWT = req.verifiedToken.userId; // 내 아이디
-    const images = req.files;
-    const content = req.body.content;
+    try {
+        const userIdFromJWT = req.verifiedToken.userId; // 내 아이디
+        const images = req.files;
+        const content = req.body.content;
 
-    console.log(images);
+        console.log(images);
 
-    const data = images.map(image => image.location)
-    console.log(data);
+        if (images == undefined)
+            return res.send(response(baseResponse.FILE_NOT_EXIST));
+        if (content) {
+            if (content.length > 2000)
+                return res.send(response(baseResponse.POST_CONTENT_LENGTH));
+        }
 
-    if (images == undefined)
-        return res.send(response(baseResponse.FILE_NOT_EXIST));
-    if (content) {
-        if (content.length > 2000)
-            return res.send(response(baseResponse.POST_CONTENT_LENGTH));
+        const data = images.map(image => image.location)
+        console.log(data);
+        if (data.length < 1)
+            return res.send(response(baseResponse.FILE_NOT_EXIST));
+
+
+
+        // 게시글 등록 
+        const writeResponse = await comService.createPost(userIdFromJWT, data, content);
+
+        return res.send(response(baseResponse.SUCCESS));
+    } catch (err) {
+        logger.error(`App - writePost Service error\n: ${err.message}`);
+        return errResponse(err.message);
     }
-
-    // 게시글 등록 
-    const writeResponse = await comService.createPost(userIdFromJWT, data, content);
-
-    return res.send(response(baseResponse.SUCCESS));
 };
 
 /**
