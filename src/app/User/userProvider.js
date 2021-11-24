@@ -39,6 +39,15 @@ exports.retrieveUser = async function(userId) {
     return userResult[0];
 };
 
+exports.retrieveUserPost = async function(userId) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const userPostResult = await userDao.selectUserPost(connection, userId)
+    connection.release();
+
+    return userPostResult;
+
+}
+
 exports.passwordCheck = async function(selectUserPasswordParams) {
     const connection = await pool.getConnection(async(conn) => conn);
     const passwordCheckResult = await userDao.selectUserPassword(

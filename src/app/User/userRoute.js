@@ -26,8 +26,8 @@ module.exports = function(app) {
     // 7.비밀번호 찾기 API
     app.post('/api/users/find-pw', user.findPassword);
 
-    // // 내 게시글(마이페이지) 조회 API
-    // app.get("/api/users/:userId", jwtMiddleware, user.getPindergartenById);
+    // 내 게시글(마이페이지) 조회 API
+    app.get("/api/users/post", jwtMiddleware, user.getUserPost);
 
     // 로그아웃
     app.patch("/api/users/sign-out", jwtMiddleware, user.signOut);

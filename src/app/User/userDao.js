@@ -31,6 +31,13 @@ async function selectUserId(connection, userId) {
     return userRow;
 }
 
+// 유저 게시글 조회
+async function selectUserPost(connection, userId) {
+    const selectUserPostQuery = `SELECT id, thumbnail FROM Post WHERE userId = ?;`;
+    const [userPostRow] = await connection.query(selectUserPostQuery, userId);
+    return userPostRow;
+}
+
 // 유저 생성
 async function insertUserInfo(connection, insertUserInfoParams) {
     const insertUserInfoQuery = `
@@ -153,6 +160,7 @@ module.exports = {
     selectUserId,
     insertUserInfo,
     selectUserAccount,
+    selectUserPost,
     selectUserPassword,
     selectLoginUser,
     insertLoginUser,

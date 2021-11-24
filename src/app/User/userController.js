@@ -294,10 +294,27 @@ exports.findPassword = async function(req, res) {
     return res.send(findPasswordResponse);
 }
 
+/**
+ * API No. 내 게시글(마이페이지) 조회
+ * [GET] /api/users/:userId/post
+ */
+exports.getUserPost = async function(req, res) {
+    const userIdFromJWT = req.verifiedToken.userId;
+    const getUserIdResponse = await userProvider.retrieveUser(userIdFromJWT);
+    const getUserPostResponse = await userProvider.retrieveUserPost(userIdFromJWT);
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "user": getUserIdResponse,
+        "posts": getUserPostResponse
+    });
+}
+
 
 /**
  * API No. 로그아웃
- * [PATCH] /app/logout
+ * [PATCH] /api/users/sign-out
  */
 exports.signOut = async function(req, res) {
     const userIdFromJWT = req.verifiedToken.userId;
