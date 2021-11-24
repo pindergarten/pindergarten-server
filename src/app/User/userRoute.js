@@ -24,6 +24,9 @@ module.exports = function(app) {
     // 6.로그인 하기 API(JWT 생성)
     app.post('/api/users/sign-in', user.signIn);
 
+    // 자동로그인 
+    app.get('/api/users/auto-signin', jwtMiddleware, user.check);
+
     // 7.비밀번호 찾기 API
     app.post('/api/users/find-pw', user.findPassword);
 
@@ -42,6 +45,5 @@ module.exports = function(app) {
     // 회원탈퇴 API
     app.patch("/api/users/:userId/status", jwtMiddleware, user.patchUserStatus);
 
-    // JWT 검증 API
-    app.get('/api/auto-login', jwtMiddleware, user.check);
+
 };
