@@ -25,7 +25,7 @@ async function selectUserId(connection, userId) {
     const selectUserIdQuery = `
                    SELECT id, nickname, phone, profile_img
                    FROM User 
-                   WHERE id = '?';
+                   WHERE id = ?;
                    `;
     const [userRow] = await connection.query(selectUserIdQuery, userId);
     return userRow;
@@ -130,6 +130,13 @@ async function updatePassword(connection, updatePasswordParams) {
     return updatePasswordRow;
 }
 
+async function updateUserStatus(connection, userId) {
+    const updateUserStatusQuery = `UPDATE User SET status='DELETED' WHERE id= ? ;
+                `;
+    const [userRows] = await connection.query(updateUserStatusQuery, userId);
+    return userRows;
+}
+
 
 module.exports = {
     selectUserPhoneNumber,
@@ -142,5 +149,6 @@ module.exports = {
     insertLoginUser,
     selectJwtToken,
     updateJwtToken,
-    updatePassword
+    updatePassword,
+    updateUserStatus
 };

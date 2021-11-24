@@ -133,3 +133,21 @@ exports.updatePassword = async function(phone, password) {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+
+exports.updateUserStatus = async function(userId) {
+    try {
+        //userId 확인
+        const userRows = await userProvider.retrieveUser(userId);
+        if (!userRows || userRows.length < 1)
+            return errResponse(baseResponse.USER_ID_NOT_EXIST);
+
+        const connection = await pool.getConnection(async(conn) => conn);
+        const userResult = await userDao.updateUserStatus(connection, userId);
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - patchUserStatus Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

@@ -294,6 +294,22 @@ exports.findPassword = async function(req, res) {
     return res.send(findPasswordResponse);
 }
 
+/**
+ * API No. 회원탈퇴 API
+ * [PATCH] /app/users/:userId/status
+ */
+exports.patchUserStatus = async function(req, res) {
+    const userId = req.params.userId;
+    const userIdFromJWT = req.verifiedToken.userId;
+
+    if (!userId || !userIdFromJWT)
+        return res.send(response(baseResponse.USER_ID_NOT_EXIST));
+    if (userId != userIdFromJWT)
+        return res.send(response(baseResponse.USER_ID_NOT_MATCH));
+
+    const updateUserStatusResponse = await userService.updateUserStatus(userId);
+    return res.send(updateUserStatusResponse);
+};
 
 /** JWT 토큰 검증 API
  * [GET] /api/auto-login
