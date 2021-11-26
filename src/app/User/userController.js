@@ -30,10 +30,15 @@ exports.postPhoneCheck = async function(req, res) {
 
     if (!phone) return res.send(response(baseResponse.USER_PHONE_EMPTY));
 
-    // 전화번호 중복 확인
-    const phoneNumberRows = await userProvider.phoneNumberCheck(phone);
-    if (phoneNumberRows.length > 0) {
-        return res.send(response(baseResponse.SIGNUP_REDUNDANT_PHONENUMBER));
+    const retrieveUser = await userProvider.accountCheck(phone);
+    if (retrieveUser.length < 1) return res.send(response(baseResponse.SUCCESS));
+
+    if (retrieveUser[0].status == 'ACTIVATED') {
+        // 전화번호 중복 확인
+        const phoneNumberRows = await userProvider.phoneNumberCheck(phone);
+        if (phoneNumberRows.length > 0) {
+            return res.send(response(baseResponse.SIGNUP_REDUNDANT_PHONENUMBER));
+        }
     }
 
     return res.send(response(baseResponse.SUCCESS));
