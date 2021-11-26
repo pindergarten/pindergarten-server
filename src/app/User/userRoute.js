@@ -45,5 +45,4 @@ module.exports = function(app) {
     // 회원탈퇴 API
     app.patch("/api/users/:userId/status", jwtMiddleware, user.patchUserStatus);
 
-
 };

@@ -24,7 +24,8 @@ exports.createUser = async function(nickname, password, phone) {
             .digest("hex");
 
         const retrieveUser = await userProvider.accountCheck(phone);
-        if (retrieveUser[0].status == 'DELETED') {
+
+        if (retrieveUser.length > 0 && retrieveUser[0].status == 'DELETED') {
             const updateUserInfo = await userDao.updateUserInfo(connection, nickname, hashedPassword, phone, 'ACTIVATED')
 
             connection.release();
@@ -42,8 +43,6 @@ exports.createUser = async function(nickname, password, phone) {
             connection.release();
             return response(baseResponse.SUCCESS, { userId: userIdResult[0].insertId, });
         }
-
-
 
 
     } catch (err) {
