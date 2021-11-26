@@ -53,13 +53,23 @@ async function insertUserInfo(connection, insertUserInfoParams) {
 }
 
 // 유저 수정
-async function updateUserInfo(connection, userId, profile_image) {
+async function updateUserInfo(connection, nickname, hashedPassword, phone, status) {
     const insertUserInfoQuery = `
-    UPDATE User SET profile_img= ? WHERE id= ? ;
+    UPDATE User SET nickname = ?, password = ?, status = ? WHERE phone= ? ;
 `;
-    const insertUserInfoRow = await connection.query(insertUserInfoQuery, [profile_image, userId]);
+    const UserInfoRow = await connection.query(insertUserInfoQuery, [nickname, hashedPassword, status, phone]);
 
-    return insertUserInfoRow;
+    return UserInfoRow;
+}
+
+// 유저 프로필사진 수정
+async function updateUserImage(connection, userId, profile_image) {
+    const insertUserInfoQuery = `
+    UPDATE User SET profile_img= ?,  WHERE id= ? ;
+`;
+    const UserInfoRow = await connection.query(insertUserInfoQuery, [profile_image, userId]);
+
+    return UserInfoRow;
 }
 
 // 유저 계정 상태 체크
@@ -164,6 +174,8 @@ async function updateUserStatus(connection, userId) {
 }
 
 
+
+
 module.exports = {
     selectUserPhoneNumber,
     selectUserNickName,
@@ -179,5 +191,6 @@ module.exports = {
     updatePassword,
     updateJwtStatus,
     updateUserStatus,
-    updateUserInfo
+    updateUserInfo,
+    updateUserImage
 }

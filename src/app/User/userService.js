@@ -15,6 +15,7 @@ const { connect } = require("http2");
 
 exports.createUser = async function(nickname, password, phone) {
     try {
+        const connection = await pool.getConnection(async(conn) => conn);
 
         // 비밀번호 암호화
         const hashedPassword = await crypto
@@ -22,14 +23,27 @@ exports.createUser = async function(nickname, password, phone) {
             .update(password)
             .digest("hex");
 
-        const insertUserInfoParams = [nickname, hashedPassword, phone];
+        const retrieveUser = await userProvider.accountCheck(phone);
+        if (retrieveUser[0].status == 'DELETED') {
+            const updateUserInfo = await userDao.updateUserInfo(connection, nickname, hashedPassword, phone, 'ACTIVATED')
 
-        const connection = await pool.getConnection(async(conn) => conn);
+            connection.release();
+            return response(baseResponse.SUCCESS, { userId: retrieveUser[0].id, });
+        } else {
+            // 전화번호 중복 확인
+            const phoneNumberRows = await userProvider.phoneNumberCheck(phone);
+            if (phoneNumberRows.length > 0) {
+                return response(baseResponse.SIGNUP_REDUNDANT_PHONENUMBER);
+            }
 
-        const userIdResult = await userDao.insertUserInfo(connection, insertUserInfoParams);
-        console.log(`추가된 회원 : ${userIdResult[0].insertId}`)
-        connection.release();
-        return response(baseResponse.SUCCESS, { userId: userIdResult[0].insertId, });
+            const insertUserInfoParams = [nickname, hashedPassword, phone];
+            const userIdResult = await userDao.insertUserInfo(connection, insertUserInfoParams);
+            console.log(`추가된 회원 : ${userIdResult[0].insertId}`)
+            connection.release();
+            return response(baseResponse.SUCCESS, { userId: userIdResult[0].insertId, });
+        }
+
+
 
 
     } catch (err) {
@@ -117,7 +131,7 @@ exports.updateUserInfo = async function(userId, profile_image) {
 
         const connection = await pool.getConnection(async(conn) => conn);
 
-        const userResult = await userDao.updateUserInfo(connection, userId, profile_image);
+        const userResult = await userDao.updateUserImage(connection, userId, profile_image);
         connection.release();
 
         return response(baseResponse.SUCCESS);

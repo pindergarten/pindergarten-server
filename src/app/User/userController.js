@@ -198,16 +198,6 @@ exports.postUsers = async function(req, res) {
     if (phone.length < 10)
         return res.send(response(baseResponse.SIGNUP_PHONE_ERROR_TYPE))
 
-    // 닉네임 중복 확인
-    const nickNameRows = await userProvider.nickNameCheck(nickname);
-    if (nickNameRows.length > 0) {
-        return res.send(response(baseResponse.SIGNUP_REDUNDANT_NICKNAME));
-    }
-    // 전화번호 중복 확인
-    const phoneNumberRows = await userProvider.phoneNumberCheck(phone);
-    if (phoneNumberRows.length > 0) {
-        return res.send(response(baseResponse.SIGNUP_REDUNDANT_PHONENUMBER));
-    }
 
     //비밀번호 일치 확인
     if (password !== password_check)
