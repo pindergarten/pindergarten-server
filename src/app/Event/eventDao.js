@@ -11,7 +11,7 @@ async function selectEvents(connection) {
 // 아이디로 글 검색
 async function selectEventById(connection, eventId) {
     const selectListQuery = `
-    SELECT id, title, thumbnail, DATE_FORMAT(expired_at, "%Y.%m.%d") AS expired_at ,DATE_FORMAT(created_at, "%Y.%m.%d") AS created_at FROM Event WHERE id = ?
+    SELECT id, title, image, DATE_FORMAT(expired_at, "%Y.%m.%d") AS expired_at ,DATE_FORMAT(created_at, "%Y.%m.%d") AS created_at FROM Event WHERE id = ?
     `;
     const [selectListRows] = await connection.query(selectListQuery, [eventId]);
     return selectListRows;
