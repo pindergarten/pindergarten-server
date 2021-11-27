@@ -65,7 +65,7 @@ async function updateUserInfo(connection, nickname, hashedPassword, phone, statu
 // 유저 프로필사진 수정
 async function updateUserImage(connection, userId, profile_image) {
     const insertUserInfoQuery = `
-    UPDATE User SET profile_img= ?,  WHERE id= ? ;
+    UPDATE User SET profile_img= ? WHERE id= ? ;
 `;
     const UserInfoRow = await connection.query(insertUserInfoQuery, [profile_image, userId]);
 
