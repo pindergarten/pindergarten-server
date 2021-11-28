@@ -89,8 +89,7 @@ exports.retrievePindergartenById = async function(userId, pindergartenId) {
         }
         pindergarten.imgUrls = imgArray;
 
-        if (pindergarten.imgUrls == null)
-            return response(baseResponse.PINDERGARTEN_IMAGES_NOT_EXIST);
+
 
         // 유저가 게시글 좋아요했는지 체크 
         const pindergartenLikeResult = await pinderDao.selectPindergartenLike(connection, userId, pindergartenId);
