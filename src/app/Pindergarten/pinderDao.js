@@ -49,7 +49,7 @@ async function selectPindergartenImg(connection, pindergartenId) {
 
 // 좋아요 조회
 async function selectPindergartenLike(connection, userId, pindergartenId) {
-    const selectPindergartenLikeQuery = `SELECT * FROM Pindergarten_Like WHERE userId = ? AND pindergartenId = ? ;`;
+    const selectPindergartenLikeQuery = `SELECT userId, pindergartenId FROM Pindergarten_Like WHERE userId = ? AND pindergartenId = ? ;`;
 
     const LikeRows = await connection.query(selectPindergartenLikeQuery, [userId, pindergartenId]);
     return LikeRows;

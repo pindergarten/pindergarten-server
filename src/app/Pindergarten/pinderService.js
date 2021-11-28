@@ -16,15 +16,6 @@ const { connect } = require("http2");
 
 exports.updateLike = async function(userId, pindergartenId) {
     try {
-        //userId 확인
-        const userRows = await userProvider.retrieveUser(userId);
-        if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
-
-        //pindergartenId확인
-        const pindergartenRows = await pinderProvider.retrievePindergartenById(pindergartenId);
-
-        if (!pindergartenRows) return errResponse(baseResponse.PINDERGARTEN_NOT_EXIST);
-
         //like 테이블 확인
         const likeRows = await pinderProvider.retrieveLike(
             userId,
