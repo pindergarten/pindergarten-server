@@ -115,6 +115,8 @@ exports.deletePost = async function(req, res) {
         postId
     );
 
+
+
     return res.send(deletePostResponse);
 }
 

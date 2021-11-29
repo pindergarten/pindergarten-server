@@ -70,6 +70,23 @@ async function deletePost(connection, deletePostParams) {
     return postRows;
 }
 
+// 게시글 좋아요 삭제
+async function deletePostLike(connection, postId) {
+    const deletePostQuery = `DELETE FROM Post_Like WHERE postId = ? ;`;
+    const postRows = await connection.query(deletePostQuery, postId);
+
+    return postRows;
+
+}
+// 게시글 댓글 삭제
+async function deletePostComment(connection, postId) {
+    const deletePostQuery = `DELETE FROM Post_Comment WHERE postId = ? ;`;
+    const postRows = await connection.query(deletePostQuery, postId);
+
+    return postRows;
+
+}
+
 async function deletePostContent(connection, postId) {
     const deleteListQuery = `
     DELETE FROM Post_Image
@@ -202,6 +219,8 @@ module.exports = {
     selectPostImg,
     deletePost,
     deletePostContent,
+    deletePostLike,
+    deletePostComment,
     selectLikeByPost,
     insertLike,
     deleteLike,
