@@ -46,9 +46,10 @@ exports.deletePost = async function(userId, postId) {
         const userRows = await userProvider.retrieveUser(userId);
         if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
 
-
-        const postContentResult = await comDao.deletePostContent(connection, postId);
-        const postResult = await comDao.deletePost(connection, postId);
+        const deleteAllLike = await comDao.deletePostLike(connection, postId);
+        const deleteAllComment = await comDao.deletePostComment(connection, postId);
+        const deletePostContent = await comDao.deletePostContent(connection, postId);
+        const deletePost = await comDao.deletePost(connection, postId);
 
 
         await connection.commit() //  트랜잭션 적용 끝 
@@ -64,9 +65,8 @@ exports.deletePost = async function(userId, postId) {
         logger.error(`App - Delete Post Service error\n: ${err.message}`);
         return baseResponse.DB_ERROR;
     }
-
-
 }
+
 exports.updateLike = async function(userId, postId) {
     try {
         //userId 확인
@@ -120,7 +120,6 @@ exports.createComment = async function(postId, userId, content) {
         const userRows = await userProvider.retrieveUser(userId);
         if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
 
-
         const insertCommentParams = [postId, userId, content];
         const connection = await pool.getConnection(async(conn) => conn);
 
@@ -139,7 +138,6 @@ exports.deleteComment = async function(userId, postId, commentId) {
         //userId 확인
         const userRows = await userProvider.retrieveUser(userId);
         if (userRows.length < 1) return errResponse(baseResponse.USER_ID_NOT_EXIST);
-
 
         const deleteCommentParams = [userId, postId, commentId];
         const connection = await pool.getConnection(async(conn) => conn);
@@ -169,44 +167,6 @@ exports.insertDeclaration = async function(userId, postId, reason, title, conten
 
     } catch (err) {
         logger.error(`App - Insert Declaration Service error\n: ${err.message}`);
-        return baseResponse.DB_ERROR;
-    }
-};
-
-// 해당 게시글에 대한 신고 수 조회
-// 한 게시글의 신고 수 넘어가면
-// 해당 글 삭제
-// 유저 일주일 사용 정지
-exports.afterWork = async function(postId) {
-    try {
-
-        const connection = await pool.getConnection(async(conn) => conn);
-        await connection.beginTransaction() // 트랜잭션 적용 시작
-
-        const count = await comDao.retrieveDeclarationCount(connection, postId);
-
-        // 해당 글 삭제 + 유저 일주일 사용 정지
-        if (count.count > 5) {
-            const deleteResult = await comDao.deletePost(connection, postId);
-            const deleteDetailResult = await comDao.deletePostContent(connection, postId);
-
-            // postId를 작성한 사람 사용정지
-            const searchId = await comDao.searchPostUser(connection, postId);
-            var user = searchId[0].userId;
-            const userStatus = await comDao.updateUserStatus(connection, user);
-        }
-
-        await connection.commit() //  트랜잭션 적용 끝
-        connection.release();
-        return response(baseResponse.SUCCESS);
-
-
-    } catch (err) {
-        const connection = await pool.getConnection(async(conn) => conn);
-        await connection.rollback()
-        connection.release();
-
-        logger.error(`App - After Declaration Service error\n: ${err.message}`);
         return baseResponse.DB_ERROR;
     }
 };
