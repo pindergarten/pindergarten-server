@@ -33,7 +33,7 @@ async function selectUserId(connection, userId) {
 
 // 유저 게시글 조회
 async function selectUserPost(connection, userId) {
-    const selectUserPostQuery = `SELECT id, thumbnail FROM Post WHERE userId = ?
+    const selectUserPostQuery = `SELECT id, userId, thumbnail FROM Post WHERE userId = ?
     ORDER BY created_at DESC;`;
     const [userPostRow] = await connection.query(selectUserPostQuery, userId);
     return userPostRow;

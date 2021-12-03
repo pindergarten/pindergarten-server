@@ -27,14 +27,14 @@ module.exports = function(app) {
     // 자동로그인 
     app.get('/api/users/auto-signin', jwtMiddleware, user.check);
 
-    // 7.비밀번호 찾기 API
+    // 7.비밀번호 찾기(재설정) API
     app.post('/api/users/find-pw', user.findPassword);
 
-    // 내 게시글(마이페이지) 조회 API
-    app.get("/api/users/post", jwtMiddleware, user.getUserPost);
-
-    // 프로필 조회 API
+    // 사용자 프로필 조회 API
     app.get("/api/users/:userId", user.getUserInfo);
+
+    // 사용자 게시글 조회 API
+    app.get("/api/users/:userId/post", user.getUserPost);
 
     // 내 프로필 수정 API
     app.post("/api/users/:userId", jwtMiddleware, multer.upload_profile.single('profile_image'), user.updateUserInfo);

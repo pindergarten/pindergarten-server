@@ -299,7 +299,6 @@ exports.getUserInfo = async function(req, res) {
     if (!userId)
         return res.response(baseResponse.USER_ID_NOT_EXIST)
 
-
     const getUserInfoResponse = await userProvider.retrieveUser(userId);
 
     return res.send(getUserInfoResponse);
@@ -330,18 +329,16 @@ exports.updateUserInfo = async function(req, res) {
 }
 
 /**
- * API No. 내 게시글(마이페이지) 조회
+ * API No. 사용자 게시글 조회
  * [GET] /api/users/:userId/post
  */
 exports.getUserPost = async function(req, res) {
-    const userIdFromJWT = req.verifiedToken.userId;
-    const getUserIdResponse = await userProvider.retrieveUser(userIdFromJWT);
-    const getUserPostResponse = await userProvider.retrieveUserPost(userIdFromJWT);
+    const userId = req.params.userId
+    const getUserPostResponse = await userProvider.retrieveUserPost(userId);
     return res.send({
         "isSuccess": true,
         "code": 1000,
         "message": "성공",
-        "user": getUserIdResponse,
         "posts": getUserPostResponse
     });
 }
