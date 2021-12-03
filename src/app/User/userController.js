@@ -343,6 +343,23 @@ exports.getUserPost = async function(req, res) {
     });
 }
 
+/**
+ * API No. 마이페이지
+ * [GET] /api/users/post
+ */
+exports.getUserPage = async function(req, res) {
+    const userIdFromJWT = req.verifiedToken.userId;
+    const getUserInfoResponse = await userProvider.retrieveUser(userIdFromJWT);
+    const getUserPostResponse = await userProvider.retrieveUserPost(userIdFromJWT);
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "user": getUserInfoResponse,
+        "posts": getUserPostResponse
+    });
+}
+
 
 /**
  * API No. 로그아웃
