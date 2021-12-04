@@ -301,7 +301,12 @@ exports.getUserInfo = async function(req, res) {
 
     const getUserInfoResponse = await userProvider.retrieveUser(userId);
 
-    return res.send(getUserInfoResponse);
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "user": getUserInfoResponse
+    });
 }
 
 /**
@@ -326,6 +331,21 @@ exports.updateUserInfo = async function(req, res) {
     const postPetResponse = await userService.updateUserInfo(userIdFromJWT, profile_image);
 
     return res.send(postPetResponse);
+}
+
+/**
+ * API No. 사용자 펫 조회
+ * [GET] /api/users/:userId/pet
+ */
+exports.getUserPet = async function(req, res) {
+    const userId = req.params.userId
+    const getUserPetResponse = await userProvider.retrieveUserPet(userId);
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "pets": getUserPetResponse
+    });
 }
 
 /**

@@ -36,6 +36,9 @@ module.exports = function(app) {
     // 사용자 프로필 조회 API
     app.get("/api/users/:userId", user.getUserInfo);
 
+    // 사용자 펫 조회 API
+    app.get("/api/users/:userId/pet", user.getUserPet);
+
     // 사용자 게시글 조회 API
     app.get("/api/users/:userId/post", user.getUserPost);
 

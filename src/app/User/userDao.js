@@ -31,6 +31,14 @@ async function selectUserId(connection, userId) {
     return userRow;
 }
 
+// 유저 펫 조회
+
+async function selectUserPet(connection, userId) {
+    const selectUserPostQuery = `SELECT id, userId, name, profile_image, gender, breed, birth, vaccination, neutering FROM Pet WHERE userId = ?;`;
+    const [userPostRow] = await connection.query(selectUserPostQuery, userId);
+    return userPostRow;
+}
+
 // 유저 게시글 조회
 async function selectUserPost(connection, userId) {
     const selectUserPostQuery = `SELECT id, userId, thumbnail FROM Post WHERE userId = ?
@@ -184,6 +192,7 @@ module.exports = {
     insertUserInfo,
     selectUserAccount,
     selectUserPost,
+    selectUserPet,
     selectUserPassword,
     selectLoginUser,
     insertLoginUser,

@@ -39,6 +39,15 @@ exports.retrieveUser = async function(userId) {
     return userResult[0];
 };
 
+exports.retrieveUserPet = async function(userId) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const userPetResult = await userDao.selectUserPet(connection, userId)
+    connection.release();
+
+    return userPetResult;
+
+}
+
 exports.retrieveUserPost = async function(userId) {
     const connection = await pool.getConnection(async(conn) => conn);
     const userPostResult = await userDao.selectUserPost(connection, userId)
