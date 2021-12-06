@@ -12,7 +12,7 @@ exports.retrievePosts = async function(userId) {
     try {
         await connection.beginTransaction();
 
-        const postListResult = await comDao.selectPosts(connection);
+        const postListResult = await comDao.selectPosts(connection, userId);
 
         for (post of postListResult) {
             const postLikeResult = await comDao.selectLike(connection, userId, post["id"]);
