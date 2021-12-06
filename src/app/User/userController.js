@@ -296,17 +296,11 @@ exports.findPassword = async function(req, res) {
 exports.getUserInfo = async function(req, res) {
     const userId = req.params.userId;
 
-    if (!userId)
-        return res.response(baseResponse.USER_ID_NOT_EXIST)
+    if (!userId) return res.response(baseResponse.USER_ID_NOT_EXIST)
 
     const getUserInfoResponse = await userProvider.retrieveUser(userId);
 
-    return res.send({
-        "isSuccess": true,
-        "code": 1000,
-        "message": "성공",
-        "user": getUserInfoResponse
-    });
+    return res.send(getUserInfoResponse);
 }
 
 /**
