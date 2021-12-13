@@ -214,7 +214,6 @@ exports.blockUser = async function(userId, blockUserId) {
         if (blockRows.length > 0)
             return errResponse(baseResponse.ALREADY_BLOCK);
 
-
         const connection = await pool.getConnection(async(conn) => conn);
         const userResult = await userDao.insertBlock(connection, userId, blockUserId);
         connection.release();

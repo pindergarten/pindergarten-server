@@ -182,6 +182,15 @@ async function updateUserStatus(connection, userId) {
     return userRows;
 }
 
+
+async function selectBlockList(connection, userId) {
+    const selectBlockQuery = `
+    SELECT blockUserId FROM Block WHERE userId=?;
+    `;
+    const selectBlockRow = await connection.query(selectBlockQuery, [userId]);
+    return selectBlockRow;
+}
+
 async function selectBlock(connection, userId, blockUserId) {
     const selectBlockQuery = `
     SELECT userId, blockUserId FROM Block WHERE userId=? AND blockUserId = ?;
@@ -215,6 +224,8 @@ module.exports = {
     updateUserStatus,
     updateUserInfo,
     updateUserImage,
+    selectBlockList,
     selectBlock,
+
     insertBlock
 }
