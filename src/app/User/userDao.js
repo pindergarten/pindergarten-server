@@ -193,8 +193,8 @@ async function selectBlockList(connection, userId) {
     INNER JOIN User U ON U.id = B.blockUserId
     WHERE userId=?;
     `;
-    const selectBlockRow = await connection.query(selectBlockQuery, [userId]);
-    return selectBlockRow;
+    const blockRows = await connection.query(selectBlockQuery, [userId]);
+    return blockRows;
 }
 
 async function selectBlock(connection, userId, blockUserId) {
@@ -206,10 +206,17 @@ async function selectBlock(connection, userId, blockUserId) {
 }
 
 async function insertBlock(connection, userId, blockUserId) {
-    const updateUserStatusQuery = `INSERT INTO Block(userId, blockUserId) VALUES (?,?) ;
+    const selectBlockQuery = `INSERT INTO Block(userId, blockUserId) VALUES (?,?) ;
                 `;
-    const [userRows] = await connection.query(updateUserStatusQuery, [userId, blockUserId]);
-    return userRows;
+    const [blockRows] = await connection.query(selectBlockQuery, [userId, blockUserId]);
+    return blockRows;
+}
+
+async function deleteBlock(connection, userId, blockUserId) {
+    const selectBlockQuery = `DELETE FROM Block WHERE userId = ? AND blockUserId = ? ;
+                `;
+    const [blockRows] = await connection.query(selectBlockQuery, [userId, blockUserId]);
+    return blockRows;
 }
 
 async function selectReport(connection, userId, reportUserId) {
@@ -252,6 +259,7 @@ module.exports = {
     selectBlockList,
     selectBlock,
     insertBlock,
+    deleteBlock,
     selectReport,
     insertReport,
 }
