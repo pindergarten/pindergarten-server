@@ -202,3 +202,26 @@ exports.updateUserStatus = async function(userId) {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+
+exports.blockUser = async function(userId, blockUserId) {
+    try {
+        //userId 확인
+        const userRows = await userProvider.retrieveUser(userId);
+        if (!userRows || userRows.length < 1)
+            return errResponse(baseResponse.USER_ID_NOT_EXIST);
+
+        const blockRows = await userProvider.retrieveBlock(userId, blockUserId);
+        if (blockRows.length > 0)
+            return errResponse(baseResponse.ALREADY_BLOCK);
+
+
+        const connection = await pool.getConnection(async(conn) => conn);
+        const userResult = await userDao.insertBlock(connection, userId, blockUserId);
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - blockUser Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

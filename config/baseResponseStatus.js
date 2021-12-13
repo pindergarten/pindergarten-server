@@ -186,7 +186,11 @@ module.exports = {
         code: 2033,
         message: "존재하지 않는 펫입니다."
     },
-
+    ALREADY_BLOCK: {
+        isSuccess: false,
+        code: 2034,
+        message: "이미 차단한 사용자입니다.",
+    },
 
     //Connection, Transaction 등의 서버 오류
     DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },

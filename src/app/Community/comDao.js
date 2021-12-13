@@ -25,15 +25,17 @@ async function selectPosts(connection, userId) {
     P.id,
     P.content,
     P.thumbnail,
+    P.userId,
     U.nickname,
     U.profile_img
     FROM Post P 
     INNER JOIN User U on P.userId = U.id
     WHERE P.id NOT IN (SELECT postId FROM Declaration WHERE userId = ?)
+    AND P.userId NOT IN (SELECT blockUserId FROM Block WHERE userId = ?)
     ORDER BY P.created_at DESC;
     ;
     `;
-    const [selectListRows] = await connection.query(selectListQuery, [userId]);
+    const [selectListRows] = await connection.query(selectListQuery, [userId, userId]);
     console.log(selectListRows)
 
     return selectListRows;

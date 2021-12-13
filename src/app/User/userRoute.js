@@ -51,4 +51,7 @@ module.exports = function(app) {
     // 회원탈퇴 API
     app.patch("/api/users/:userId/status", jwtMiddleware, user.patchUserStatus);
 
+    // 사용자 차단 API
+    app.post("/api/users/:userId/block", jwtMiddleware, user.postBlock);
+
 };
