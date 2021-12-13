@@ -54,7 +54,7 @@ module.exports = function(app) {
     // 사용자 차단 API
     app.post("/api/users/:userId/block", jwtMiddleware, user.postBlock);
 
-    // 차단 조회 API
+    // 차단 목록 조회 API
     app.get("/api/block", jwtMiddleware, user.getBlocklist);
 
     // 사용자 신고 API

@@ -188,7 +188,10 @@ async function updateUserStatus(connection, userId) {
 
 async function selectBlockList(connection, userId) {
     const selectBlockQuery = `
-    SELECT blockUserId FROM Block WHERE userId=?;
+    SELECT B.blockUserId, U.nickname, U.profile_img, DATE_FORMAT(B.created_at, "%Y.%m.%d") AS date
+    FROM Block B
+    INNER JOIN User U ON U.id = B.blockUserId
+    WHERE userId=?;
     `;
     const selectBlockRow = await connection.query(selectBlockQuery, [userId]);
     return selectBlockRow;
