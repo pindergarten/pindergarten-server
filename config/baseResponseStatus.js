@@ -191,6 +191,26 @@ module.exports = {
         code: 2034,
         message: "이미 차단한 사용자입니다.",
     },
+    TYPE_INPUT_NUMBER: {
+        isSuccess: false,
+        code: 2034,
+        message: "잘못된 신고 유형입니다.",
+    },
+    INPUT_FILTER_WRONG: {
+        isSuccess: false,
+        code: 2034,
+        message: "신고 내용이 잘못되었습니다.",
+    },
+    INPUT_DECLARE_CONTENT: {
+        isSuccess: false,
+        code: 2034,
+        message: "신고 내용을 입력해주세요",
+    },
+    ALREADY_REPORT_USER: {
+        isSuccess: false,
+        code: 2034,
+        message: "이미 신고한 사용자입니다.",
+    },
 
     //Connection, Transaction 등의 서버 오류
     DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },

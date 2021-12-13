@@ -96,3 +96,11 @@ exports.retrieveBlocklist = async function(userId) {
     connection.release();
     return blcokResult[0];
 }
+
+exports.existReport = async function(userId, reportUserId) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const reportResult = await userDao.selectReport(connection, userId, reportUserId);
+
+    connection.release();
+    return reportResult[0][0];
+}

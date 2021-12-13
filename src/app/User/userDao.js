@@ -206,6 +206,25 @@ async function insertBlock(connection, userId, blockUserId) {
     return userRows;
 }
 
+async function selectReport(connection, userId, reportUserId) {
+    const selectBlockQuery = `
+    SELECT EXISTS(
+        SELECT *
+        FROM Report_User
+        WHERE userId = ? AND reportUserId = ? 
+      ) AS exist;
+    `;
+    const selectBlockRow = await connection.query(selectBlockQuery, [userId, reportUserId]);
+    return selectBlockRow;
+}
+
+async function insertReport(connection, insertReportParams) {
+    const updateUserStatusQuery = `INSERT INTO Report_User(userId, reportUserId, reason, title, content) VALUES (?,?,?,?,?) ;
+    `;
+    const [userRows] = await connection.query(updateUserStatusQuery, insertReportParams);
+    return userRows;
+}
+
 module.exports = {
     selectUserPhoneNumber,
     selectUserNickName,
@@ -226,6 +245,7 @@ module.exports = {
     updateUserImage,
     selectBlockList,
     selectBlock,
-
-    insertBlock
+    insertBlock,
+    selectReport,
+    insertReport,
 }
