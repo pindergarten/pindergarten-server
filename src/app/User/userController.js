@@ -430,6 +430,18 @@ exports.getBlocklist = async function(req, res) {
     });
 }
 
+exports.postUnBlock = async function(req, res) {
+    const userId = req.params.userId;
+    const userIdFromJWT = req.verifiedToken.userId;
+    if (!userId)
+        return res.send(response(baseResponse.USER_ID_NOT_EXIST));
+
+
+    const unblockUserResponse = await userService.unBlockUser(userIdFromJWT, userId);
+    return res.send(unblockUserResponse);
+}
+
+
 exports.postReport = async function(req, res) {
     const userIdFromJWT = req.verifiedToken.userId;
     const userId = req.params.userId;

@@ -188,10 +188,13 @@ async function updateUserStatus(connection, userId) {
 
 async function selectBlockList(connection, userId) {
     const selectBlockQuery = `
-    SELECT blockUserId FROM Block WHERE userId=?;
+    SELECT B.blockUserId, U.nickname, U.profile_img, DATE_FORMAT(B.created_at, "%Y.%m.%d") AS date
+    FROM Block B
+    INNER JOIN User U ON U.id = B.blockUserId
+    WHERE userId=?;
     `;
-    const selectBlockRow = await connection.query(selectBlockQuery, [userId]);
-    return selectBlockRow;
+    const blockRows = await connection.query(selectBlockQuery, [userId]);
+    return blockRows;
 }
 
 async function selectBlock(connection, userId, blockUserId) {
@@ -203,10 +206,17 @@ async function selectBlock(connection, userId, blockUserId) {
 }
 
 async function insertBlock(connection, userId, blockUserId) {
-    const updateUserStatusQuery = `INSERT INTO Block(userId, blockUserId) VALUES (?,?) ;
+    const selectBlockQuery = `INSERT INTO Block(userId, blockUserId) VALUES (?,?) ;
                 `;
-    const [userRows] = await connection.query(updateUserStatusQuery, [userId, blockUserId]);
-    return userRows;
+    const [blockRows] = await connection.query(selectBlockQuery, [userId, blockUserId]);
+    return blockRows;
+}
+
+async function deleteBlock(connection, userId, blockUserId) {
+    const selectBlockQuery = `DELETE FROM Block WHERE userId = ? AND blockUserId = ? ;
+                `;
+    const [blockRows] = await connection.query(selectBlockQuery, [userId, blockUserId]);
+    return blockRows;
 }
 
 async function selectReport(connection, userId, reportUserId) {
@@ -249,6 +259,7 @@ module.exports = {
     selectBlockList,
     selectBlock,
     insertBlock,
+    deleteBlock,
     selectReport,
     insertReport,
 }

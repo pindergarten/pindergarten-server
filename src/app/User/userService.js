@@ -225,6 +225,24 @@ exports.blockUser = async function(userId, blockUserId) {
     }
 }
 
+exports.unBlockUser = async function(userId, blockUserId) {
+    try {
+        //userId 확인
+        const userRows = await userProvider.retrieveUser(userId);
+        if (!userRows || userRows.length < 1)
+            return errResponse(baseResponse.USER_ID_NOT_EXIST);
+
+        const connection = await pool.getConnection(async(conn) => conn);
+        const userResult = await userDao.deleteBlock(connection, userId, blockUserId);
+        connection.release();
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - unBlockUser Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
 //유저 신고
 exports.insertReport = async function(userId, reportUserId, reason, title, content) {
     try {
