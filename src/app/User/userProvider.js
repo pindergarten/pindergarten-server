@@ -82,3 +82,10 @@ exports.loginCheck = async function(userId) {
 
     return loginResult;
 };
+
+exports.retrieveBlock = async function(userId, blockUserId) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const blcokResult = await userDao.selectBlock(connection, userId, blockUserId);
+    connection.release();
+    return blcokResult[0];
+}

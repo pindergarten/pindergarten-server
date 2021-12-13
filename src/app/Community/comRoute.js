@@ -35,4 +35,6 @@ module.exports = function(app) {
 
     // 18. 신고하기 API
     app.post("/api/posts/:postId/declaration", jwtMiddleware, com.postDeclaration);
+
+
 }

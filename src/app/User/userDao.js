@@ -176,14 +176,26 @@ async function updateJwtStatus(connection, userId) {
 }
 
 async function updateUserStatus(connection, userId) {
-    const updateUserStatusQuery = `UPDATE User SET status='DELETED' WHERE id= ? ;
+    const updateUserStatusQuery = `UPDATE User SET status='DELETED', nickname = '' WHERE id= ? ;
                 `;
     const [userRows] = await connection.query(updateUserStatusQuery, userId);
     return userRows;
 }
 
+async function selectBlock(connection, userId, blockUserId) {
+    const selectBlockQuery = `
+    SELECT userId, blockUserId FROM Block WHERE userId=? AND blockUserId = ?;
+    `;
+    const selectBlockRow = await connection.query(selectBlockQuery, [userId, blockUserId]);
+    return selectBlockRow;
+}
 
-
+async function insertBlock(connection, userId, blockUserId) {
+    const updateUserStatusQuery = `INSERT INTO Block(userId, blockUserId) VALUES (?,?) ;
+                `;
+    const [userRows] = await connection.query(updateUserStatusQuery, [userId, blockUserId]);
+    return userRows;
+}
 
 module.exports = {
     selectUserPhoneNumber,
@@ -202,5 +214,7 @@ module.exports = {
     updateJwtStatus,
     updateUserStatus,
     updateUserInfo,
-    updateUserImage
+    updateUserImage,
+    selectBlock,
+    insertBlock
 }

@@ -404,6 +404,18 @@ exports.patchUserStatus = async function(req, res) {
     return res.send(updateUserStatusResponse);
 };
 
+
+exports.postBlock = async function(req, res) {
+    const userId = req.params.userId;
+    const userIdFromJWT = req.verifiedToken.userId;
+    if (!userId)
+        return res.send(response(baseResponse.USER_ID_NOT_EXIST));
+
+
+    const blockUserResponse = await userService.blockUser(userIdFromJWT, userId);
+    return res.send(blockUserResponse);
+}
+
 /** JWT 토큰 검증 API
  * [GET] /api/users/auto-login
  */
