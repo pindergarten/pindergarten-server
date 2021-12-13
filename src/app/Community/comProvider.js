@@ -103,9 +103,9 @@ exports.retrieveLike = async function(userId, postId) {
 }
 
 // 댓글 조회
-exports.retrieveComment = async function(postId) {
+exports.retrieveComment = async function(postId, userId) {
     const connection = await pool.getConnection(async(conn) => conn);
-    const cmtResult = await comDao.selectComment(connection, postId);
+    const cmtResult = await comDao.selectComment(connection, postId, userId);
     connection.release();
 
     return cmtResult;

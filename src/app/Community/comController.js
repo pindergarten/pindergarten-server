@@ -155,10 +155,11 @@ exports.getPostComments = async function(req, res) {
      */
 
     const postId = req.params.postId;
+    const userId = req.verifiedToken.userId;
 
     if (!postId) return res.send(response(baseResponse.POST_NOT_EXIST));
 
-    const commentResult = await comProvider.retrieveComment(postId);
+    const commentResult = await comProvider.retrieveComment(postId, userId);
     return res.send({
         "isSuccess": true,
         "code": 1000,

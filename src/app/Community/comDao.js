@@ -162,23 +162,24 @@ async function insertComment(connection, insertCommentParams) {
 
 
 // 댓글 조회
-async function selectComment(connection, postId) {
+async function selectComment(connection, postId, userId) {
     const selectCommentQuery = `
     SELECT 
     C.id,
-    U.id AS userId,
+    C.userId,
     U.nickname,
     U.profile_img,
     DATE_FORMAT(C.created_at, "%Y.%m.%d %H:%i") AS date,
     C.content
    
-      FROM Post_Comment C
-      INNER JOIN User U on C.userId = U.id
-      WHERE postId = ?
-      ORDER BY date;
+    FROM Post_Comment C
+    INNER JOIN User U on C.userId = U.id
+    WHERE postId = ?
+    AND C.userId NOT IN (SELECT blockUserId FROM Block WHERE userId = ?)
+    ORDER BY date;
 
     `;
-    const [selectCommentRows] = await connection.query(selectCommentQuery, postId);
+    const [selectCommentRows] = await connection.query(selectCommentQuery, [postId, userId]);
 
     return selectCommentRows;
 }

@@ -347,7 +347,8 @@ exports.getUserPet = async function(req, res) {
  * [GET] /api/users/:userId/post
  */
 exports.getUserPost = async function(req, res) {
-    const userId = req.params.userId
+    const userId = req.params.userId;
+
     const getUserPostResponse = await userProvider.retrieveUserPost(userId);
     return res.send({
         "isSuccess": true,
