@@ -48,9 +48,9 @@ exports.retrieveUserPet = async function(userId) {
 
 }
 
-exports.retrieveUserPost = async function(userId) {
+exports.retrieveUserPost = async function(userId, userIdFromJWT) {
     const connection = await pool.getConnection(async(conn) => conn);
-    const userPostResult = await userDao.selectUserPost(connection, userId)
+    const userPostResult = await userDao.selectUserPost(connection, userId, userIdFromJWT)
     connection.release();
 
     return userPostResult;
