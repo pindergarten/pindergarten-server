@@ -416,6 +416,19 @@ exports.postBlock = async function(req, res) {
     return res.send(blockUserResponse);
 }
 
+exports.getBlocklist = async function(req, res) {
+    const userIdFromJWT = req.verifiedToken.userId;
+
+    const blockUserResponse = await userProvider.retrieveBlocklist(userIdFromJWT);
+    return res.send({
+        "isSuccess": true,
+        "code": 1000,
+        "message": "성공",
+        "blockList": blockUserResponse
+    });
+}
+
+
 /** JWT 토큰 검증 API
  * [GET] /api/users/auto-login
  */

@@ -40,7 +40,7 @@ module.exports = function(app) {
     app.get("/api/users/:userId/pet", user.getUserPet);
 
     // 사용자 게시글 조회 API
-    app.get("/api/users/:userId/post", user.getUserPost);
+    app.get("/api/users/:userId/post", jwtMiddleware, user.getUserPost);
 
     // 내 프로필 수정 API
     app.post("/api/users/:userId", jwtMiddleware, multer.upload_profile.single('profile_image'), user.updateUserInfo);
@@ -53,5 +53,9 @@ module.exports = function(app) {
 
     // 사용자 차단 API
     app.post("/api/users/:userId/block", jwtMiddleware, user.postBlock);
+
+    // 차단 조회 API
+    app.get("/api/block", jwtMiddleware, user.getBlocklist);
+
 
 };
