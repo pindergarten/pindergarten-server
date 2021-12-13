@@ -57,5 +57,6 @@ module.exports = function(app) {
     // 차단 조회 API
     app.get("/api/block", jwtMiddleware, user.getBlocklist);
 
-
+    // 사용자 신고 API
+    app.post("/api/users/:userId/report", jwtMiddleware, user.postReport);
 };

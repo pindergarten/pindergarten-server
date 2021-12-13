@@ -224,3 +224,21 @@ exports.blockUser = async function(userId, blockUserId) {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+
+//유저 신고
+exports.insertReport = async function(userId, reportUserId, reason, title, content) {
+    try {
+        const insertReportParams = [userId, reportUserId, reason, title, content];
+        const connection = await pool.getConnection(async(conn) => conn);
+
+        const reportResult = await userDao.insertReport(connection, insertReportParams);
+        console.log(`신고된 유저 : ${reportResult.insertId}`);
+        connection.release();
+        return response(baseResponse.SUCCESS);
+
+
+    } catch (err) {
+        logger.error(`App - Insert Report Service error\n: ${err.message}`);
+        return baseResponse.DB_ERROR;
+    }
+};

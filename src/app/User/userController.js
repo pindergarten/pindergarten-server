@@ -428,6 +428,64 @@ exports.getBlocklist = async function(req, res) {
     });
 }
 
+exports.postReport = async function(req, res) {
+    const userIdFromJWT = req.verifiedToken.userId;
+    const userId = req.params.userId;
+    const { type } = req.query;
+    const { title, content } = req.body;
+
+    // 유저 체크
+    const statusCheck = await userProvider.checkJWT(userId);
+    if (statusCheck.length < 1)
+        return res.send(errResponse(baseResponse.SIGNIN_INACTIVE_ACCOUNT));
+
+    if (!userId)
+        return res.send(errResponse(baseResponse.USER_ID_NOT_EXIST));
+
+    // 공백 체크
+    var re = /^ss*$/;
+
+    // type
+    if (!type || re.test(type))
+        return res.send(errResponse(baseResponse.TYPE_INPUT_NUMBER));
+
+
+    var reason = "";
+    if (type == 1) {
+        reason = "적합하지 않은 콘텐츠 게시";
+
+    } else if (type == 2) {
+        reason = "타인 사칭";
+
+    } else if (type == 3) {
+        reason = "욕설/비방/혐오";
+
+    } else {
+        return res.send(errResponse(baseResponse.INPUT_FILTER_WRONG));
+    }
+
+    // 신고 제목, 내용 체크 
+    if (!content || re.test(content))
+        return res.send(errResponse(baseResponse.INPUT_DECLARE_CONTENT));
+
+    if (title.length > 40) {
+        return res.send(errResponse(baseResponse.INPUT_FILTER_WRONG));
+    }
+    if (content.length > 500) {
+        return res.send(errResponse(baseResponse.INPUT_FILTER_WRONG));
+    }
+
+    // 이미 내가 신고했는지
+    const existDeclar = await userProvider.existReport(userIdFromJWT, userId);
+    if (existDeclar.exist == 1)
+        return res.send(errResponse(baseResponse.ALREADY_REPORT_USER))
+
+    // 신고안했으면 신고하고
+    else {
+        const declaration = await userService.insertReport(userIdFromJWT, userId, reason, title, content);
+        return res.send(declaration);
+    }
+}
 
 /** JWT 토큰 검증 API
  * [GET] /api/users/auto-login
