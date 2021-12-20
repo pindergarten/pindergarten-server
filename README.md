@@ -40,4 +40,5 @@
 
 ## ERD (수정중)
 
-![ERD](https://user-images.githubusercontent.com/46320067/141063639-dbf4c1ac-66b6-4f97-aad9-15838f06e4bd.png)
+![PINDERGARTEN-ERD_20211220_192826](https://user-images.githubusercontent.com/46320067/146753217-dd53d54b-970c-4b6d-abaa-bfae37c1361b.png)
+
