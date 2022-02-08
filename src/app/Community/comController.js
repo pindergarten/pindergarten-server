@@ -10,7 +10,8 @@ const jwt = require("jsonwebtoken");
 
 const { emit } = require("nodemon");
 
-
+const DEFAULT_START_PAGE = 1;
+const DEFAULT_PAGE_SIZE = 10;
 
 /**
  * API No.8
@@ -19,7 +20,18 @@ const { emit } = require("nodemon");
  */
 exports.getPosts = async function(req, res) {
     const userIdFromJWT = req.verifiedToken.userId;
-    const postResult = await comProvider.retrievePosts(userIdFromJWT);
+    var pageSize = req.query.size;
+    var curPage = req.query.page;
+
+    if (!curPage || curPage <= 0)
+        curPage = DEFAULT_START_PAGE
+    if (!pageSize || pageSize <= 0)
+        pageSize = DEFAULT_PAGE_SIZE
+
+    let offset = (curPage - 1) * Number(pageSize);
+    let limit = Number(pageSize);
+
+    const postResult = await comProvider.retrievePosts(userIdFromJWT, offset, limit);
 
 
     return res.send({

@@ -7,12 +7,12 @@ const pinderDao = require("./pinderDao");
 
 // Provider: Read 비즈니스 로직 처리
 
-exports.retrievePindergartens = async function(userId, latitude, longitude) {
+exports.retrievePindergartens = async function(userId, latitude, longitude, offset, limit) {
     const connection = await pool.getConnection(async(conn) => conn);
     try {
         await connection.beginTransaction();
 
-        const pindergartenListResult = await pinderDao.selectPindergartens(connection, latitude, longitude);
+        const pindergartenListResult = await pinderDao.selectPindergartens(connection, latitude, longitude, offset, limit);
 
         for (pindergarten of pindergartenListResult) {
             const pindergartenLikeResult = await pinderDao.selectPindergartenLike(connection, userId, pindergarten["id"]);
@@ -38,12 +38,12 @@ exports.retrievePindergartens = async function(userId, latitude, longitude) {
     }
 
 }
-exports.retrieveNearPindergartens = async function(userId, latitude, longitude) {
+exports.retrieveNearPindergartens = async function(userId, latitude, longitude, offset, limit) {
     const connection = await pool.getConnection(async(conn) => conn);
     try {
         await connection.beginTransaction();
 
-        const pindergartenListResult = await pinderDao.selectNearPindergartens(connection, latitude, longitude);
+        const pindergartenListResult = await pinderDao.selectNearPindergartens(connection, latitude, longitude, offset, limit);
 
         for (pindergarten of pindergartenListResult) {
             const pindergartenLikeResult = await pinderDao.selectPindergartenLike(connection, userId, pindergarten["id"]);
@@ -151,11 +151,11 @@ exports.serchPindergarten = async function(latitude, longitude, query) {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
-exports.retrieveBlogReviews = async function(pindergartenId) {
+exports.retrieveBlogReviews = async function(pindergartenId, offset, limit) {
     const connection = await pool.getConnection(async(conn) => conn);
     try {
 
-        const pindergartenResult = await pinderDao.selectReviews(connection, pindergartenId);
+        const pindergartenResult = await pinderDao.selectReviews(connection, pindergartenId, offset, limit);
 
         connection.release();
         return pindergartenResult[0];

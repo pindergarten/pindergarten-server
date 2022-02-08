@@ -10,6 +10,8 @@ const jwt = require("jsonwebtoken");
 const pinderDao = require("./pinderDao");
 const { emit } = require("nodemon");
 
+const DEFAULT_START_PAGE = 1;
+const DEFAULT_PAGE_SIZE = 10;
 /**
  * API No. 유치원 전체 조회 
  *[GET] /api/events
@@ -20,12 +22,22 @@ exports.getPindergartens = async function(req, res) {
      */
     const userIdFromJWT = req.verifiedToken.userId;
     const { latitude, longitude } = req.query;
+    var pageSize = req.query.size;
+    var curPage = req.query.page;
+
+    if (!curPage || curPage <= 0)
+        curPage = DEFAULT_START_PAGE
+    if (!pageSize || pageSize <= 0)
+        pageSize = DEFAULT_PAGE_SIZE
+
+    let offset = (curPage - 1) * Number(pageSize);
+    let limit = Number(pageSize);
 
     if (!latitude || !longitude) {
         return res.send(response(baseResponse.GEO_NOT_EXIST));
     }
 
-    const pindergartensResult = await pinderProvider.retrievePindergartens(userIdFromJWT, latitude, longitude);
+    const pindergartensResult = await pinderProvider.retrievePindergartens(userIdFromJWT, latitude, longitude, offset, limit);
 
     return res.send({
         "isSuccess": true,
@@ -46,10 +58,25 @@ exports.getNearPindergartens = async function(req, res) {
      */
     const userIdFromJWT = req.verifiedToken.userId;
     const { latitude, longitude } = req.query;
+    var pageSize = req.query.size;
+    var curPage = req.query.page;
+
+    if (!curPage || curPage <= 0)
+        curPage = DEFAULT_START_PAGE
+    if (!pageSize || pageSize <= 0)
+        pageSize = DEFAULT_PAGE_SIZE
+
+    let offset = (curPage - 1) * Number(pageSize);
+    let limit = Number(pageSize);
+
     if (!latitude || !longitude) {
         return res.send(response(baseResponse.GEO_NOT_EXIST));
     }
-    const pindergartensResult = await pinderProvider.retrieveNearPindergartens(userIdFromJWT, latitude, longitude);
+
+    if (!latitude || !longitude) {
+        return res.send(response(baseResponse.GEO_NOT_EXIST));
+    }
+    const pindergartensResult = await pinderProvider.retrieveNearPindergartens(userIdFromJWT, latitude, longitude, offset, limit);
     return res.send({
         "isSuccess": true,
         "code": 1000,
@@ -151,6 +178,7 @@ exports.getLikedPindergartens = async function(req, res) {
     const longitude = req.query.longitude;
     const userIdFromJWT = req.verifiedToken.userId;
 
+
     if (!latitude || !longitude) {
         return res.send(response(baseResponse.GEO_NOT_EXIST));
     }
@@ -176,11 +204,21 @@ exports.getLikedPindergartens = async function(req, res) {
 exports.getBlogReview = async function(req, res) {
 
     const pindergartenId = req.params.pindergartenId;
+    var pageSize = req.query.size;
+    var curPage = req.query.page;
+
+    if (!curPage || curPage <= 0)
+        curPage = DEFAULT_START_PAGE
+    if (!pageSize || pageSize <= 0)
+        pageSize = DEFAULT_PAGE_SIZE
+
+    let offset = (curPage - 1) * Number(pageSize);
+    let limit = Number(pageSize);
 
     if (!pindergartenId)
         return res.send(response(baseResponse.PINDERGARTEN_NOT_EXIST));
 
-    const pindergartenResult = await pinderProvider.retrieveBlogReviews(pindergartenId);
+    const pindergartenResult = await pinderProvider.retrieveBlogReviews(pindergartenId, offset, limit);
 
     return res.send({
         "isSuccess": true,
