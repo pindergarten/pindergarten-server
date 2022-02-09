@@ -22,22 +22,12 @@ exports.getPindergartens = async function(req, res) {
      */
     const userIdFromJWT = req.verifiedToken.userId;
     const { latitude, longitude } = req.query;
-    var pageSize = req.query.size;
-    var curPage = req.query.page;
-
-    if (!curPage || curPage <= 0)
-        curPage = DEFAULT_START_PAGE
-    if (!pageSize || pageSize <= 0)
-        pageSize = DEFAULT_PAGE_SIZE
-
-    let offset = (curPage - 1) * Number(pageSize);
-    let limit = Number(pageSize);
 
     if (!latitude || !longitude) {
         return res.send(response(baseResponse.GEO_NOT_EXIST));
     }
 
-    const pindergartensResult = await pinderProvider.retrievePindergartens(userIdFromJWT, latitude, longitude, offset, limit);
+    const pindergartensResult = await pinderProvider.retrievePindergartens(userIdFromJWT, latitude, longitude);
 
     return res.send({
         "isSuccess": true,
@@ -204,21 +194,11 @@ exports.getLikedPindergartens = async function(req, res) {
 exports.getBlogReview = async function(req, res) {
 
     const pindergartenId = req.params.pindergartenId;
-    var pageSize = req.query.size;
-    var curPage = req.query.page;
-
-    if (!curPage || curPage <= 0)
-        curPage = DEFAULT_START_PAGE
-    if (!pageSize || pageSize <= 0)
-        pageSize = DEFAULT_PAGE_SIZE
-
-    let offset = (curPage - 1) * Number(pageSize);
-    let limit = Number(pageSize);
 
     if (!pindergartenId)
         return res.send(response(baseResponse.PINDERGARTEN_NOT_EXIST));
 
-    const pindergartenResult = await pinderProvider.retrieveBlogReviews(pindergartenId, offset, limit);
+    const pindergartenResult = await pinderProvider.retrieveBlogReviews(pindergartenId);
 
     return res.send({
         "isSuccess": true,
