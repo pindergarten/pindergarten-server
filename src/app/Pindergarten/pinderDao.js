@@ -1,28 +1,26 @@
 // 전체 유치원 조회
-async function selectPindergartens(connection, latitude, longitude, offset, limit) {
+async function selectPindergartens(connection, latitude, longitude) {
     const selectPindergartenQuery = `
     SELECT id, name, address, thumbnail, latitude, longitude, rating,
         (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)
 	    -radians(?))+sin(radians(?))*sin(radians(latitude)))) AS distance
     FROM Pindergarten 
     ORDER BY distance 
-    LIMIT ?,?
     `;
-    const [PindergartenRows] = await connection.query(selectPindergartenQuery, [latitude, longitude, latitude, offset, limit]);
+    const [PindergartenRows] = await connection.query(selectPindergartenQuery, [latitude, longitude, latitude]);
 
     return PindergartenRows;
 }
 
-async function selectNearPindergartens(connection, latitude, longitude, offset, limit) {
+async function selectNearPindergartens(connection, latitude, longitude) {
     const selectPindergartenQuery = `
     SELECT id, name, address, thumbnail, latitude, longitude, rating,
         (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)
 	    -radians(?))+sin(radians(?))*sin(radians(latitude)))) AS distance
     FROM Pindergarten 
     ORDER BY distance 
-    LIMIT ?,?
     `;
-    const [PindergartenRows] = await connection.query(selectPindergartenQuery, [latitude, longitude, latitude, offset, limit]);
+    const [PindergartenRows] = await connection.query(selectPindergartenQuery, [latitude, longitude, latitude]);
 
     return PindergartenRows;
 }
@@ -113,12 +111,11 @@ async function searchPindergartens(connection, latitude, longitude, query) {
 }
 // 리뷰 조회 
 
-async function selectReviews(connection, pindergartenId, offset, limit) {
+async function selectReviews(connection, pindergartenId) {
     const selectPindergartenQuery = `SELECT title,content,date,link
     FROM Pindergarten_Review 
-    WHERE pindergartenId = ?
-    LIMIT ?,?;`;
-    const LikeRows = await connection.query(selectPindergartenQuery, [pindergartenId, offset, limit]);
+    WHERE pindergartenId = ?;`;
+    const LikeRows = await connection.query(selectPindergartenQuery, [pindergartenId]);
 
     return LikeRows;
 }
