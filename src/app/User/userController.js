@@ -349,8 +349,10 @@ exports.getUserPet = async function(req, res) {
 exports.getUserPost = async function(req, res) {
     const userIdFromJWT = req.verifiedToken.userId;
     const userId = req.params.userId;
+    var cursor = req.query.cursor;
 
-    const getUserPostResponse = await userProvider.retrieveUserPost(userId, userIdFromJWT);
+    if (!cursor || cursor <= 0) cursor = 1000000;
+    const getUserPostResponse = await userProvider.retrieveUserPost(userId, userIdFromJWT, cursor);
     return res.send({
         "isSuccess": true,
         "code": 1000,
@@ -365,8 +367,10 @@ exports.getUserPost = async function(req, res) {
  */
 exports.getUserPage = async function(req, res) {
     const userIdFromJWT = req.verifiedToken.userId;
+    var cursor = req.query.cursor;
+    if (!cursor || cursor <= 0) cursor = 1000000;
     const getUserInfoResponse = await userProvider.retrieveUser(userIdFromJWT);
-    const getUserPostResponse = await userProvider.retrieveUserPost(userIdFromJWT);
+    const getUserPostResponse = await userProvider.retrieveUserPost(userIdFromJWT, userIdFromJWT, cursor);
     return res.send({
         "isSuccess": true,
         "code": 1000,

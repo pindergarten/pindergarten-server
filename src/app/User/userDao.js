@@ -40,13 +40,15 @@ async function selectUserPet(connection, userId) {
 }
 
 // 유저 게시글 조회
-async function selectUserPost(connection, userId, userIdFromJWT) {
+async function selectUserPost(connection, userId, userIdFromJWT, cursor) {
     const selectUserPostQuery = `SELECT id, userId, thumbnail 
     FROM Post 
     WHERE userId = ?
     AND id NOT IN (SELECT postId FROM Declaration WHERE userId = ?)
-    ORDER BY created_at DESC;`;
-    const [userPostRow] = await connection.query(selectUserPostQuery, [userId, userIdFromJWT]);
+    AND id < ?
+    ORDER BY created_at DESC, id DESC
+    LIMIT 10;`;
+    const [userPostRow] = await connection.query(selectUserPostQuery, [userId, userIdFromJWT, cursor]);
     return userPostRow;
 }
 
