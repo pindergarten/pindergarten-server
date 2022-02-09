@@ -19,7 +19,7 @@ async function insertPostImage(connection, postId, image) {
 }
 
 // 전체 글 검색
-async function selectPosts(connection, userId, offset, limit) {
+async function selectPosts(connection, userId, cursor) {
     const selectListQuery = `
     SELECT 
     P.id,
@@ -32,11 +32,12 @@ async function selectPosts(connection, userId, offset, limit) {
     INNER JOIN User U on P.userId = U.id
     WHERE P.id NOT IN (SELECT postId FROM Declaration WHERE userId = ?)
     AND P.userId NOT IN (SELECT blockUserId FROM Block WHERE userId = ?)
-    ORDER BY P.created_at DESC
-    LIMIT ?,?;
+    AND P.id <= ?
+    ORDER BY P.created_at DESC, P.id DESC
+    LIMIT 10;
     ;
     `;
-    const [selectListRows] = await connection.query(selectListQuery, [userId, userId, offset, limit]);
+    const [selectListRows] = await connection.query(selectListQuery, [userId, userId, cursor]);
     console.log(selectListRows)
 
     return selectListRows;
