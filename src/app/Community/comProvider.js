@@ -7,12 +7,12 @@ const comDao = require("./comDao");
 
 // Provider: Read 비즈니스 로직 처리
 
-exports.retrievePosts = async function(userId, offset, limit) {
+exports.retrievePosts = async function(userId, cursor) {
     const connection = await pool.getConnection(async(conn) => conn);
     try {
         await connection.beginTransaction();
 
-        const postListResult = await comDao.selectPosts(connection, userId, offset, limit);
+        const postListResult = await comDao.selectPosts(connection, userId, cursor);
 
         for (post of postListResult) {
             const postLikeResult = await comDao.selectLike(connection, userId, post["id"]);

@@ -20,18 +20,11 @@ const DEFAULT_PAGE_SIZE = 10;
  */
 exports.getPosts = async function(req, res) {
     const userIdFromJWT = req.verifiedToken.userId;
-    var pageSize = req.query.size;
-    var curPage = req.query.page;
+    var cursor = req.query.cursor;
 
-    if (!curPage || curPage <= 0)
-        curPage = DEFAULT_START_PAGE
-    if (!pageSize || pageSize <= 0)
-        pageSize = DEFAULT_PAGE_SIZE
-
-    let offset = (curPage - 1) * Number(pageSize);
-    let limit = Number(pageSize);
-
-    const postResult = await comProvider.retrievePosts(userIdFromJWT, offset, limit);
+    if (!cursor || cursor <= 0)
+        cursor = 100000;
+    const postResult = await comProvider.retrievePosts(userIdFromJWT, cursor);
 
 
     return res.send({
@@ -39,7 +32,6 @@ exports.getPosts = async function(req, res) {
         "code": 1000,
         "message": "성공",
         "allposts": postResult
-
     });
 };
 
