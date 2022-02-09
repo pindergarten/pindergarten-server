@@ -32,7 +32,7 @@ async function selectPosts(connection, userId, cursor) {
     INNER JOIN User U on P.userId = U.id
     WHERE P.id NOT IN (SELECT postId FROM Declaration WHERE userId = ?)
     AND P.userId NOT IN (SELECT blockUserId FROM Block WHERE userId = ?)
-    AND P.id <= ?
+    AND P.id < ?
     ORDER BY P.created_at DESC, P.id DESC
     LIMIT 10;
     ;
